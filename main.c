@@ -1,31 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_substr.c                                        :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pkorsako <pkorsako@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/12/10 16:21:20 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/01/26 19:09:19 by pkorsako         ###   ########.fr       */
+/*   Created: 2023/03/25 14:37:34 by pkorsako          #+#    #+#             */
+/*   Updated: 2023/03/25 14:57:13 by pkorsako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/libft.h"
+#include "petit_shell.h"
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+void	upgrade_list(t_garbage **alloc_element)
 {
-	char	*dest;
+	*alloc_element = malloc(sizeof(t_garbage));
+	if (alloc_element = )
+}
 
-	while (*s && start)
-	{
-		s++;
-		start--;
-	}
-	if (len > ft_strlen(s))
-		len = ft_strlen(s);
-	dest = malloc(len + 1);
-	if (!dest)
-		return (NULL);
-	ft_strlcpy(dest, s, len + 1);
-	return (dest);
+void	g_collector(void *new_alloc, int byte_size)
+{
+	static t_garbage	*alloc_element;
+	
+	upgrade_list(&alloc_element);
+}
+
+int main()
+{
+	
 }
