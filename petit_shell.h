@@ -3,20 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   petit_shell.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pkorsako <pkorsako@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:42:51 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/03/25 14:48:34 by pkorsako         ###   ########.fr       */
+/*   Updated: 2023/03/27 16:34:32 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PETIT_SHELL.H
-# define PETIT_SHELL.H
+#ifndef PETIT_SHELL_H
+# define PETIT_SHELL_H
+# include <stdlib.h>
+# include <string.h>
+# include <stdio.h>
+# define ALLOC 1
+# define FREE 0
 
 typedef struct s_garbage
 {
 	void	*element;
-	t_garbage	*next;
+	void	*next;
 }	t_garbage;
 
 #endif
