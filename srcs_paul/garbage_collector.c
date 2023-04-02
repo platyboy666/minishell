@@ -10,12 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "petit_shell.h"
+#include "../inc/minishell.h"
 
 void	free_garbage(t_garbage *alloc_elements)
 {
 	t_garbage *index;
-	int i = 0;
 
 	alloc_elements = alloc_elements->next;
 	index = alloc_elements;
@@ -26,7 +25,6 @@ void	free_garbage(t_garbage *alloc_elements)
 		alloc_elements = alloc_elements->next;
 		free(index);
 	}
-	
 }
 
 t_garbage	upgrade_list(t_garbage *alloc_elements, void *allocated_element)
@@ -45,7 +43,7 @@ t_garbage	upgrade_list(t_garbage *alloc_elements, void *allocated_element)
 	new_struct->next = NULL;
 }
 
-void	*g_collector(size_t byte_size, int action)
+void	*ft_malloc(size_t byte_size, int action)
 {
 	static t_garbage	alloc_elements;
 	void				*allocated_element;
@@ -56,22 +54,22 @@ void	*g_collector(size_t byte_size, int action)
 	{
 		allocated_element = malloc(byte_size);
 		if (!allocated_element)
-			g_collector(0, FREE);
+			ft_malloc(0, FREE);
 		upgrade_list(&alloc_elements, allocated_element);
 		return (allocated_element);
 	}
 	return (NULL);
 }
 
-int main()
+int main_test()
 {
 	char	*str;
 	int		*i;
 	unsigned long *l;
 	
-	str = g_collector(sizeof(char) * 11, ALLOC);
-	i = g_collector(sizeof(int) * 2, ALLOC);
-	l = g_collector(sizeof(unsigned long) * 3, ALLOC);
+	str = ft_malloc(sizeof(char) * 11, ALLOC);
+	i = ft_malloc(sizeof(int) * 2, ALLOC);
+	l = ft_malloc(sizeof(unsigned long) * 3, ALLOC);
 	strncpy(str, "popopopopo", 11);
 	i[0] = 123;
 	i[1] = 456;
@@ -81,6 +79,6 @@ int main()
 	printf("%s\n", str);
 	printf("%d\t%d\n", i[0], i[1]);
 	printf("%ld\t%ld\t%ld\n", l[0], l[1], l[2]);
-	g_collector(0, FREE);
+	ft_malloc(0, FREE);
 	return (1);
 }
