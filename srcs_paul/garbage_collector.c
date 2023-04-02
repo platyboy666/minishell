@@ -1,16 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   garbage_collector.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:37:34 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/03/27 18:38:02 by marvin           ###   ########.fr       */
+/*   Updated: 2023/04/02 19:00:12 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/minishell.h"
+// #include "../inc/minishell.h"
+#include "petit_shell.h"
 
 void	free_garbage(t_garbage *alloc_elements)
 {
@@ -34,7 +35,10 @@ t_garbage	upgrade_list(t_garbage *alloc_elements, void *allocated_element)
 	
 	new_struct = malloc(sizeof(t_garbage));
 	if(!new_struct)
+	{
+		ft_malloc(0, FREE);
 		exit(1);
+	}
 	index = alloc_elements;
 	while (index->next)
 		index = index->next;
@@ -61,12 +65,16 @@ void	*ft_malloc(size_t byte_size, int action)
 	return (NULL);
 }
 
-int main_test()
+int main()
 {
 	char	*str;
 	int		*i;
 	unsigned long *l;
+	struct sigaction sig;
 	
+	sig.sa_flags = SA_SIGINFO;
+	sig.sa_sigaction = &signal_handler;
+	sigemptyset(&sig.sa_mask);
 	str = ft_malloc(sizeof(char) * 11, ALLOC);
 	i = ft_malloc(sizeof(int) * 2, ALLOC);
 	l = ft_malloc(sizeof(unsigned long) * 3, ALLOC);
@@ -79,6 +87,11 @@ int main_test()
 	printf("%s\n", str);
 	printf("%d\t%d\n", i[0], i[1]);
 	printf("%ld\t%ld\t%ld\n", l[0], l[1], l[2]);
+	while (1)
+	{
+		sigaction(SIGINT, &sig, NULL);
+		sigaction(SIGQUIT, &sig, NULL);
+	}
 	ft_malloc(0, FREE);
 	return (1);
 }

@@ -4,7 +4,8 @@ SRCS = main.c\
 		cmd_utils.c\
 		builtins.c\
 
-SRCS_DIR = srcs_camille/
+CSRCS_DIR = srcs_camille/
+PSRCS_DIR = srcs_paul/
 
 OBJS_DIR = objs/
 OBJS = $(addprefix $(OBJS_DIR)/,$(SRCS:.c=.o))
@@ -31,10 +32,9 @@ LFLAGS = -L $(LIBFT_DIR) -lft
 
 all: $(NAME)
 
-$(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c $(INC)
+$(OBJS_DIR)/%.o: $(CSRCS_DIR)/%.c $(INC)
 	mkdir -p $(OBJS_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
-
 
 $(LIBFT):
 	@make -C $(LIBFT_DIR)

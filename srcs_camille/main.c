@@ -64,6 +64,10 @@ int	main(int ac, char **av, char **envp)
 	line = NULL;
 	line = readline("prompt>");
 	init_data(&data, envp, line);
+	while (1)							//
+	{									//elise, ca fait boucler pour qu'on puisse faire plusieurs commandes
+		line = readline("prompt>");		//
+	}									//
 	if (line)
 	{
 	//	pid_1 = fork();
