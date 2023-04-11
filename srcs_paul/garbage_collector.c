@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   garbage_collector.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: paulk <paulk@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:37:34 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/04/02 19:00:12 by marvin           ###   ########.fr       */
+/*   Updated: 2023/04/11 13:36:37 by paulk            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // #include "../inc/minishell.h"
 #include "petit_shell.h"
+char *line;
 
 void	free_garbage(t_garbage *alloc_elements)
 {
@@ -28,7 +29,7 @@ void	free_garbage(t_garbage *alloc_elements)
 	}
 }
 
-t_garbage	upgrade_list(t_garbage *alloc_elements, void *allocated_element)
+void	upgrade_list(t_garbage *alloc_elements, void *allocated_element)
 {
 	t_garbage	*new_struct;
 	t_garbage	*index;
@@ -65,33 +66,45 @@ void	*ft_malloc(size_t byte_size, int action)
 	return (NULL);
 }
 
+// void ctr_c(int sig)
+// {
+// 	if (sig == SIGUSR1)
+// 		return (1);
+// 	else 
+// 		return (-1);
+// }
+
+void	routine()
+{
+	char	*line;
+	int		i;
+	line = readline("le_mien :>");
+	printf("%s\n", line);
+	// if (signal(SIGUSR1, &ctr_c))
+	// {	
+	// 	write(1, "NA\n", 3);
+	// 	return ;
+	// }
+}
+
 int main()
 {
-	char	*str;
-	int		*i;
-	unsigned long *l;
+	char	*line;
 	struct sigaction sig;
+	int i = 0;
 	
+	line = NULL;
 	sig.sa_flags = SA_SIGINFO;
 	sig.sa_sigaction = &signal_handler;
 	sigemptyset(&sig.sa_mask);
-	str = ft_malloc(sizeof(char) * 11, ALLOC);
-	i = ft_malloc(sizeof(int) * 2, ALLOC);
-	l = ft_malloc(sizeof(unsigned long) * 3, ALLOC);
-	strncpy(str, "popopopopo", 11);
-	i[0] = 123;
-	i[1] = 456;
-	l[0] = 1234567890;
-	l[1] = 112233445566778899;
-	l[2] = 4294967295;
-	printf("%s\n", str);
-	printf("%d\t%d\n", i[0], i[1]);
-	printf("%ld\t%ld\t%ld\n", l[0], l[1], l[2]);
-	while (1)
+	line = readline("le_mien :>");
+	while (i < 5)
 	{
 		sigaction(SIGINT, &sig, NULL);
-		sigaction(SIGQUIT, &sig, NULL);
+		routine();
+		// line = readline("le_mien");
+		// printf("%s\n", line);
+		i ++;
 	}
-	ft_malloc(0, FREE);
 	return (1);
 }

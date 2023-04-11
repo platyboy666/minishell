@@ -12,9 +12,26 @@
 
 #include "petit_shell.h"
 // #include "../inc/minishell.h"
+void	ft_bzero(char *line)
+{
+	int i = 0;
+
+	while(line[i])
+	{
+		line = 0;
+		i ++;
+	}
+}
 
 void	signal_handler(int signum, siginfo_t *siginfo, void *other)
 {
-	printf("sig :%d\n", signum);
-	exit(1);
+	write(1, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+	// write(1, "\b", 2);
+	// kill(siginfo->si_pid, SIGUSR1);
+	// printf("sig :%d\n", signum);
+	// routine();
+	// exit(1);
 }
