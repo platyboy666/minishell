@@ -26,12 +26,16 @@ void	ft_bzero(char *line)
 void	signal_handler(int signum, siginfo_t *siginfo, void *other)
 {
 	write(1, "\n", 1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-	// write(1, "\b", 2);
-	// kill(siginfo->si_pid, SIGUSR1);
-	// printf("sig :%d\n", signum);
-	// routine();
-	// exit(1);
+	printf("sig :%d\n", signum);
+	if (signum == SIGINT)
+	{
+		// write(1, "\n", 1);
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+	}
+	else if (signum == SIGQUIT)
+	{
+		write(1, "popo\n", 5);
+	}
 }
