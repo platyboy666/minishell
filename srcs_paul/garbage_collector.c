@@ -6,7 +6,7 @@
 /*   By: paulk <paulk@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:37:34 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/04/23 12:22:14 by paulk            ###   ########.fr       */
+/*   Updated: 2023/04/25 12:32:17 by paulk            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,15 +79,10 @@ void	routine()
 	char	*line;
 	int		i;
 	line = readline("le_mien :>");
-	if (line != NULL)
-		printf("%s\n", line);
-	else
-		exit(1); //ctr^d pressed ?
-	// if (signal(SIGUSR1, &ctr_c))
-	// {	
-	// 	write(1, "NA\n", 3);
-	// 	return ;
-	// }
+	if (line == NULL)
+		exit(1);	//ctr^d pressed
+	add_history(line);// fait l'historique tout seul ?
+	
 }
 
 int main()
@@ -110,5 +105,6 @@ int main()
 		// printf("%s\n", line);
 		i ++;
 	}
+	rl_clear_history();// réduit les leaks de realine
 	return (1);
 }
