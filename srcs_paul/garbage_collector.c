@@ -6,14 +6,31 @@
 /*   By: paulk <paulk@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:37:34 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/04/25 12:32:17 by paulk            ###   ########.fr       */
+/*   Updated: 2023/05/01 14:07:33 by paulk            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // #include "../inc/minishell.h"
 #include "petit_shell.h"
 char *line;
+//utils
+int	ft_strcmp(const char *s1, const char *s2)
+{
+	size_t	i;
 
+	i = 0;
+	while (*s1 == ' ')
+		s1 ++;
+	while ((s1[i] != '\0') && (s1[i] == s2[i]))
+		i++;
+	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+}
+
+void	pwd(void)
+{
+	printf("%s\n", getenv("PWD"));
+}
+//utils
 void	free_garbage(t_garbage *alloc_elements)
 {
 	t_garbage *index;
@@ -82,7 +99,8 @@ void	routine()
 	if (line == NULL)
 		exit(1);	//ctr^d pressed
 	add_history(line);// fait l'historique tout seul ?
-	
+	if (!ft_strcmp(line, "pwd"))
+		pwd();
 }
 
 int main()
