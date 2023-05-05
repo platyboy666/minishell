@@ -6,7 +6,7 @@
 /*   By: paulk <paulk@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:37:34 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/05/01 14:07:33 by paulk            ###   ########.fr       */
+/*   Updated: 2023/05/05 13:51:35 by paulk            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,29 @@
 #include "petit_shell.h"
 char *line;
 //utils
-int	ft_strcmp(const char *s1, const char *s2)
-{
-	size_t	i;
+// int	ft_strcmp(const char *s1, const char *s2)
+// {
+// 	size_t	i;
 
-	i = 0;
-	while (*s1 == ' ')
-		s1 ++;
-	while ((s1[i] != '\0') && (s1[i] == s2[i]))
-		i++;
-	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-}
+// 	i = 0;
+// 	while (*s1 == ' ')
+// 		s1 ++;
+// 	while ((s1[i] != '\0') && (s1[i] == s2[i]))
+// 		i++;
+// 	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+// }
 
-void	pwd(void)
-{
-	printf("%s\n", getenv("PWD"));
-}
+// void	echo(char *str, char option)
+// {
+// 	printf("%s", str);
+// 	if (option != 'n')
+// 		printf("\n");
+// }
+
+// void	pwd(void)
+// {
+// 	printf("%s\n", getenv("PWD"));
+// }
 //utils
 void	free_garbage(t_garbage *alloc_elements)
 {
@@ -91,25 +98,43 @@ void	*ft_malloc(size_t byte_size, int action)
 // 		return (-1);
 // }
 
-void	routine()
+void	whitch_builtin(char *line, t_env *env)
+{
+	if (!ft_strcmp(line, "pwd"))
+		pwd();
+	// if (!ft_strcmp(line, "echo"))
+	// 	echo
+	if (!ft_strcmp(line, "env"))
+		ft_env(env);
+	if (!ft_strcmp(line, "export"))
+		ft_export(env, line);
+	// if (!ft_strcmp(line, "cd"))
+	// 	cd()
+}
+
+void	routine(t_env *env)
 {
 	char	*line;
 	int		i;
+	
 	line = readline("le_mien :>");
 	if (line == NULL)
 		exit(1);	//ctr^d pressed
 	add_history(line);// fait l'historique tout seul ?
-	if (!ft_strcmp(line, "pwd"))
-		pwd();
+	whitch_builtin(line, env);
+	// if (!ft_strcmp(line, "pwd"))
+	// 	pwd();
 }
 
-int main()
+int main(int argc, char **argv, char **envp)
 {
 	char	*line;
 	struct sigaction sig;
+	t_env	*env;
 	int i = 0;
 	
 	line = NULL;
+	env = create_env(envp);
 	sig.sa_flags = SA_SIGINFO;
 	sig.sa_sigaction = &signal_handler;
 	sigemptyset(&sig.sa_mask);
@@ -118,7 +143,7 @@ int main()
 	{
 		sigaction(SIGQUIT, &sig, NULL);
 		sigaction(SIGINT, &sig, NULL);
-		routine();
+		routine(env);
 		// line = readline("le_mien");
 		// printf("%s\n", line);
 		i ++;

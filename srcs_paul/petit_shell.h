@@ -6,7 +6,7 @@
 /*   By: paulk <paulk@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:42:51 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/04/11 12:51:43 by paulk            ###   ########.fr       */
+/*   Updated: 2023/05/05 12:58:37 by paulk            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,25 @@ typedef struct s_garbage
 	void	*next;
 }	t_garbage;
 
+typedef struct s_env
+{
+	char			*data;
+	struct s_env	*next;
+}	t_env;
+
 void	signal_handler(int signum, siginfo_t *info, void *other);
 void	routine();
 void	*ft_malloc(size_t byte_size, int action);
+
+t_env	*create_env(char **envp);
+
+void	ft_env(t_env *env);
+void	pwd(void);
+void	echo(char *str, char option);
+void	ft_exit(int i);
+void	cd(char *str);
+int	ft_strcmp(const char *s1, const char *s2);
+void	ft_export(t_env *env);
+
 
 #endif
