@@ -6,7 +6,7 @@
 /*   By: paulk <paulk@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:42:51 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/05/05 12:58:37 by paulk            ###   ########.fr       */
+/*   Updated: 2023/05/09 14:01:22 by paulk            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 # include <sys/wait.h>
 # define ALLOC 1
 # define FREE 0
+# define YES 1
+# define NO 0
 
 extern char *line;
 
@@ -50,7 +52,7 @@ void	echo(char *str, char option);
 void	ft_exit(int i);
 void	cd(char *str);
 int	ft_strcmp(const char *s1, const char *s2);
-void	ft_export(t_env *env);
-
+void	ft_export(t_env *env, char *data);
+char	*remove_extra_space(char *line);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: paulk <paulk@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:37:34 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/05/05 13:51:35 by paulk            ###   ########.fr       */
+/*   Updated: 2023/05/09 12:37:41 by paulk            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,8 @@ void	*ft_malloc(size_t byte_size, int action)
 // 		return (-1);
 // }
 
+// char	*ready_for_builtin(char, line)
+
 void	whitch_builtin(char *line, t_env *env)
 {
 	if (!ft_strcmp(line, "pwd"))
@@ -121,6 +123,7 @@ void	routine(t_env *env)
 	if (line == NULL)
 		exit(1);	//ctr^d pressed
 	add_history(line);// fait l'historique tout seul ?
+	line = remove_extra_space(line);
 	whitch_builtin(line, env);
 	// if (!ft_strcmp(line, "pwd"))
 	// 	pwd();

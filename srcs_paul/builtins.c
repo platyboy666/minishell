@@ -58,5 +58,5 @@ void	ft_export(t_env *env, char *new_data)
 		env = env->next;
 	new_variable = ft_malloc(sizeof(t_env), ALLOC);
 	env->next = new_variable;
-	new_variable->data = 
+	new_variable->data = new_data;
 }
