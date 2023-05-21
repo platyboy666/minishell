@@ -12,16 +12,16 @@
 
 #include "petit_shell.h"
 // #include "../inc/minishell.h"
-void	ft_bzero(char *line)
-{
-	int i = 0;
+// void	ft_bzero(char *line)
+// {
+// 	int i = 0;
 
-	while(line[i])
-	{
-		line = 0;
-		i ++;
-	}
-}
+// 	while(line[i])
+// 	{
+// 		line = 0;
+// 		i ++;
+// 	}
+// }
 
 void	signal_handler(int signum, siginfo_t *siginfo, void *other)
 {
