@@ -22,6 +22,20 @@ void	ft_exit(int i)
 	exit(i);
 }
 
+char	*find_$(char *var, t_env *env)
+{
+	char *value;
+
+	value = NULL;
+	while (!value && env->next)
+	{
+		value = ft_strnstr(var, env->data);
+		if (!value)
+			env = env->next;
+	}
+	printf("find_$ :%s\n", env->data);
+}
+
 void	echo(char *str, char option)
 {
 	printf("%s", str);
