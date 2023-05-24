@@ -6,7 +6,7 @@
 /*   By: paulk <paulk@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/10 16:03:26 by claclau           #+#    #+#             */
-/*   Updated: 2023/04/11 12:03:03 by paulk            ###   ########.fr       */
+/*   Updated: 2023/05/24 10:46:08 by paulk            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 
 	line = NULL;
-	// line = readline("prompt>");
+	line = readline("prompt>");
 	init_data(&data, envp, line);
 	while (1)							//
 	{									//elise, ca fait boucler pour qu'on puisse faire plusieurs commandes

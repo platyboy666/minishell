@@ -6,7 +6,7 @@
 /*   By: paulk <paulk@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:37:34 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/05/10 13:09:34 by paulk            ###   ########.fr       */
+/*   Updated: 2023/05/24 11:08:58 by paulk            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,8 +104,8 @@ void	whitch_builtin(char *line, t_env *env)
 {
 	if (!ft_strcmp(line, "pwd"))
 		pwd();
-	// if (!ft_strcmp(line, "echo"))
-	// 	echo
+	if (ft_strnstr(line, "echo", 20))//strnstr marche mieux que strcmp
+	 	echo(line + 4, 1, env);
 	if (!ft_strcmp(line, "env"))
 		ft_env(env);
 	if (!ft_strcmp(line, "export"))
@@ -123,7 +123,7 @@ void	routine(t_env *env)
 	if (line == NULL)
 		exit(1);	//ctr^d pressed
 	add_history(line);// fait l'historique tout seul ?
-	line = remove_extra_space(line);
+	// line = remove_extra_space(line);
 	whitch_builtin(line, env);
 	// if (!ft_strcmp(line, "pwd"))
 	// 	pwd();

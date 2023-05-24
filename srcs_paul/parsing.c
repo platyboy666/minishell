@@ -57,9 +57,9 @@ char	*remove_extra_space(char *line)
 	j = 0;
 	quote = 0;
 	parsed_line = NULL;
-	printf("lenght :%d\tft_malloc receive :%ld\n", pl_lenght(line), sizeof(char)*pl_lenght(line));
+	// printf("lenght :%d\tft_malloc receive :%ld\n", pl_lenght(line), sizeof(char)*pl_lenght(line));
 	parsed_line = ft_malloc(sizeof(char) * pl_lenght(line), ALLOC);
-	printf("parsed line after ft_malloc :%s\n", parsed_line);
+	// printf("parsed line after ft_malloc :%s\n", parsed_line);
 	ft_bzero(parsed_line, pl_lenght(line));
 	// printf("parsed line after memset :%s\n", parsed_line);
 	while (line[i])
@@ -84,6 +84,6 @@ char	*remove_extra_space(char *line)
 		}
 		i ++;
 	}
-	printf("parsed_line :%s\n", parsed_line);
+	// printf("parsed_line :%s\n", parsed_line);
 	return (parsed_line);
 }
