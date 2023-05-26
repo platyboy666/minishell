@@ -18,12 +18,12 @@ char	*ft_strnstr(const char *big, const char *little, size_t len)
 	size_t	j;
 
 	i = 0;
-	if (little[0] == '\0')
+	if (!little || little[0] == '\0')
 		return ((char *)big);
-	while (big[i] && i < len)
+	while (big[i])// && i < len
 	{
 		j = 0;
-		while (big[i + j] == little[j] && (i + j) < len)
+		while (big[i + j] == little[j])// && (i + j) < len
 		{
 			if (little[j + 1] == '\0')
 				return ((char *)(&big[i]));
@@ -68,9 +68,12 @@ char	*find_$(char *var, t_env *env)
 	printf("var :%s\t", var);
 	while (!value && env->next)
 	{
-		value = ft_strnstr(var, env->data, 5);
+		value = ft_strnstr(env->data, var, 10);
+		// printf("%s\n", value);
 		if (!value)
 			env = env->next;
+		// else 
+		// 	printf("%s\n", value);
 	}
 	printf("find_$ :%s\n", env->data);
 	value = ft_strchr(env->data, '=') + 1;
@@ -80,7 +83,7 @@ char	*find_$(char *var, t_env *env)
 
 void	echo(char *str, char option, t_env *env)
 {
-	char *s = strchr(str, '$');
+	char *s = strchr(str, '$') + 1																				;
 	find_$(s, env);
 	// printf("%s", str);
 	if (option != 'n')
