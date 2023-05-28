@@ -20,10 +20,10 @@ char	*ft_strnstr(const char *big, const char *little, size_t len)
 	i = 0;
 	if (!little || little[0] == '\0')
 		return ((char *)big);
-	while (big[i])// && i < len
+	while (big[i] && i << len)// && i < len
 	{
 		j = 0;
-		while (big[i + j] == little[j])// && (i + j) < len
+		while (big[i + j] == little[j] && (i + j) < len)// && (i + j) < len
 		{
 			if (little[j + 1] == '\0')
 				return ((char *)(&big[i]));
@@ -65,27 +65,43 @@ char	*find_$(char *var, t_env *env)
 	char *value;
 
 	value = NULL;
-	printf("var :%s\t", var);
+	// printf("var :%s\t", var);
 	while (!value && env->next)
 	{
-		value = ft_strnstr(env->data, var, 10);
+		value = ft_strnstr(env->data, var, var - ft_strchr(var, ' '));
 		// printf("%s\n", value);
 		if (!value)
 			env = env->next;
-		// else 
-		// 	printf("%s\n", value);
 	}
 	printf("find_$ :%s\n", env->data);
 	value = ft_strchr(env->data, '=') + 1;
-	printf("value :%s\n", value);
-	return(value);
+	printf("%s", value);//print la valeur de l'env
+	return(ft_strchr(var, ' ') - 1);
 }
 
 void	echo(char *str, char option, t_env *env)
 {
-	char *s = strchr(str, '$') + 1																				;
-	find_$(s, env);
-	// printf("%s", str);
+	char	*s; 
+	size_t	i;
+
+	i = 0;
+	while (str)
+	{
+		if (*str && *str != '$')
+			printf("%c", *str);
+		else
+		{
+			str = find_$(strchr(str, '$'), env);
+		}
+		str ++;
+	}
+	// if (strchr(str, '$'))
+	// {
+	// 	s = strchr(str, '$') + 1;
+	// 	find_$(s, env);
+	// }
+	// else
+	// 	printf("%s", str);
 	if (option != 'n')
 		printf("\n");
 }
