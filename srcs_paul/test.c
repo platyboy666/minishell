@@ -17,6 +17,8 @@ char	*ft_strnstr(const char *big, const char *little, size_t len)
 				return ((char *)(&big[i]));
 			j++;
 		}
+		if (i + j == len)//ajout si on cherche "zsh=valeur" "zsh apa" 3  
+			return ((char *)(&big[i]));
 		i++;
 	}
 	return (NULL);
@@ -25,6 +27,7 @@ char	*ft_strnstr(const char *big, const char *little, size_t len)
 int main()
 {
 	char *s = NULL;
-	s = ft_strnstr("popo=tamere", "popo", 5);
-	printf("%s\n", s);
+	s = ft_strnstr("ZSH=/home/paulk/.oh-my-zsh", "ZSHpopo", 4);
+	if (s)
+		printf("%s\n", s);
 }
