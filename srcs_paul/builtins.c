@@ -12,7 +12,7 @@ int	ft_strcmp(const char *s1, const char *s2)
 	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }
 
-char	*ft_strnstr(const char *big, const char *little, size_t len)
+char	*ft_strnstr(const char *big, const char *little, size_t len)//echo
 {
 	size_t	i;
 	size_t	j;
@@ -20,18 +20,38 @@ char	*ft_strnstr(const char *big, const char *little, size_t len)
 	i = 0;
 	if (!little || little[0] == '\0')
 		return ((char *)big);
-	while (big[i] && i << len)// && i < len
+	while (big[i] && i < len)
 	{
 		j = 0;
-		while (big[i + j] == little[j] && (i + j) < len)// && (i + j) < len
+		while (big[i + j] == little[j] && (i + j) < len)
 		{
-			if (little[j + 1] == '\0')
+			if (little[j + 1] == '\0' || little[j + 1] == ' ')
 				return ((char *)(&big[i]));
 			j++;
 		}
 		i++;
 	}
 	return (NULL);
+}
+
+char	*next_word(char *str)//retourne un pointeur au début du prochain mot
+{
+	while (*str && *str != ' ')
+		str ++;
+	while (*str && *str == ' ')
+		str ++;
+	return (str);
+}
+
+char	*find_sp_eof(char *str)//retourne un pointeur sur le premier ' ' ou 0 rencontrer
+{
+	while(*str)
+	{
+		if (*str == ' ')
+			return (str);
+		str ++;
+	}
+	return(str);
 }
 
 char	*ft_strchr(const char *s, int c)
@@ -54,7 +74,8 @@ char	*ft_strchr(const char *s, int c)
 
 void	cd(char *str)
 {
-	chdir(str);
+	str = next_word(str);
+	chdir(str);//comprend pas comment ca marche
 }
 
 void	ft_exit(int i)
@@ -62,30 +83,25 @@ void	ft_exit(int i)
 	exit(i);
 }
 
-char	*find_$(char *var, t_env *env)
+char	*find_$(char *var, t_env *env)//cherche une correspondance au premier mot dans l'env
 {
 	char *value;
 
 	value = NULL;
-	printf("var :%s\t", var);
 	while (!value && env->next)
 	{
-		printf("env->data :%s\tvar :%s\n", env->data, var);
-		value = ft_strnstr(env->data, var, 9);// var - ft_strchr(var, ' ')
-		// printf("%s\n", value);
+		value = ft_strnstr(env->data, var, find_sp_eof(var) - var);
 		if (!value)
 			env = env->next;
 		else
 		{
-			printf("found something\n");
-			value = ft_strchr(env->data, '=') + 1;//value pointe sur le premir char apres le =
+			value = ft_strchr(env->data, '=') + 1;
 			break;
 		}
 	}
-	printf("find_$ :%s\n", env->data);
-	// value = ft_strchr(env->data, '=') + 1;
-	printf("%s", value);//print la valeur de l'env
-	return(ft_strchr(var, ' ') - 1);// renvoi un pointeur apres la valeur chercher dans l'env
+	if (value)
+		printf("%s", value);
+	return(find_sp_eof(var) - 1);
 }
 
 void	echo(char *str, char option, t_env *env)
@@ -94,7 +110,7 @@ void	echo(char *str, char option, t_env *env)
 	size_t	i;
 
 	i = 0;
-	while (str && *str)
+	while (str && *str)// strtrim ' ' peut etre
 	{
 		if (*str && *str != '$')
 			printf("%c", *str);
@@ -104,21 +120,14 @@ void	echo(char *str, char option, t_env *env)
 		}
 		str ++;
 	}
-	// if (strchr(str, '$'))
-	// {
-	// 	s = strchr(str, '$') + 1;
-	// 	find_$(s, env);
-	// }
-	// else
-	// 	printf("%s", str);
 	if (option != 'n')
 		printf("\n");
 }
 
 void	pwd(void)
 {
-	char cwd[20];// a precisuer plus tard
-	printf("%s\n", getcwd(cwd, 30));
+	char cwd[50];// a precisuer plus tard
+	printf("%s\n", getcwd(cwd, 50));
 }
 
 void	ft_env(t_env *env)
@@ -136,13 +145,33 @@ void	ft_env(t_env *env)
 
 }
 
-void	ft_export(t_env *env, char *new_data)
+void	ft_export(t_env *env, char *new_data)//
 {
 	t_env	*new_variable;
 
+	new_data = next_word(new_data);
+	// printf("new_data :%s\n", new_data);
 	while (env->next)
 		env = env->next;
 	new_variable = ft_malloc(sizeof(t_env), ALLOC);
+
 	env->next = new_variable;
 	new_variable->data = new_data;
+	new_variable->next = NULL;
+}
+
+void	ft_unset(t_env *env, char *rm_data)
+{
+	t_env	*tmp;
+
+	rm_data = next_word(rm_data);
+	// printf("em_data :%s\n", rm_data);
+	while (env->next)
+	{
+		if (ft_strnstr(env->data, rm_data, find_sp_eof(rm_data) - rm_data))
+			break;
+		tmp = env;
+		env = env->next;
+	}
+	tmp->next = env->next;//pas besoins de free, le gb s'en occupera
 }

@@ -13,21 +13,24 @@ char	*ft_strnstr(const char *big, const char *little, size_t len)
 		j = 0;
 		while (big[i + j] == little[j] && (i + j) < len)// && (i + j) < len
 		{
-			if (little[j + 1] == '\0')
-				return ((char *)(&big[i]));
+			// if (i + j == len)
+			// 	return ((char *)(&big[i]));
 			j++;
 		}
-		if (i + j == len)//ajout si on cherche "zsh=valeur" "zsh apa" 3  
-			return ((char *)(&big[i]));
+		if (i + j == len)
+				return ((char *)(&big[i]));
+		// if (i + j == len)//ajout si on cherche "zsh=valeur" "zsh apa" 3  
+		// 	return ((char *)(&big[i]));
 		i++;
 	}
 	return (NULL);
 }
 
-int main()
+int main(int argc, char *argv[])
 {
 	char *s = NULL;
-	s = ft_strnstr("ZSH=/home/paulk/.oh-my-zsh", "ZSHpopo", 4);
+
+	s = ft_strnstr(argv[1], argv[2], 1);
 	if (s)
 		printf("%s\n", s);
 }

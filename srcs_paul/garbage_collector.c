@@ -6,38 +6,90 @@
 /*   By: paulk <paulk@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:37:34 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/05/31 12:09:30 by paulk            ###   ########.fr       */
+/*   Updated: 2023/06/16 11:31:46 by paulk            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // #include "../inc/minishell.h"
 #include "petit_shell.h"
 char *line;
-//utils
-// int	ft_strcmp(const char *s1, const char *s2)
-// {
-// 	size_t	i;
 
-// 	i = 0;
-// 	while (*s1 == ' ')
-// 		s1 ++;
-// 	while ((s1[i] != '\0') && (s1[i] == s2[i]))
-// 		i++;
-// 	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-// }
+static int	ft_is_in_charset(char c, char const *set)
+{
+	unsigned long	i;
 
-// void	echo(char *str, char option)
-// {
-// 	printf("%s", str);
-// 	if (option != 'n')
-// 		printf("\n");
-// }
+	i = 0;
+	while (set[i])
+	{
+		if (c == set[i])
+			return (1);
+		i++;
+	}
+	return (0);
+}
 
-// void	pwd(void)
-// {
-// 	printf("%s\n", getenv("PWD"));
-// }
-//utils
+static unsigned long	ft_count_to_trim(char const *s1, char const *set)
+{
+	unsigned long	i;
+	unsigned long	count;
+	unsigned long	len_s1;
+
+	i = 0;
+	count = 0;
+	if (s1[0] == '\0')
+		return (0);
+	len_s1 = ft_strlen(s1);
+	while (ft_is_in_charset(s1[i], set))
+	{
+		count++;
+		i++;
+	}
+	while (ft_is_in_charset(s1[--len_s1], set))
+		count++;
+	return (count);
+}
+
+static signed long	ft_last_nonset_index(char const *s1, char const *set)
+{
+	signed long	index;
+
+	if (s1[0] == '\0')
+		return (0);
+	index = ft_strlen(s1) - 1;
+	while (ft_is_in_charset(s1[index], set) && s1[index])
+		index--;
+	return (index);
+}
+
+char	*ft_strtrim(char const *s1, char const *set)
+{
+	char		*trimmed_str;
+	signed long	i;
+	signed long	j;
+
+	if (!s1)
+		return (NULL);
+	if (ft_last_nonset_index(s1, set) == -1)
+		return (ft_strdup(""));
+	trimmed_str = ft_malloc(sizeof(char)
+			* (ft_strlen(s1) - ft_count_to_trim(s1, set) + 1), ALLOC);
+	if (!trimmed_str)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (ft_is_in_charset(s1[i], set))
+		i++;
+	while (i <= ft_last_nonset_index(s1, set))
+	{
+		trimmed_str[j] = s1[i];
+		j++;
+		i++;
+	}
+	if (s1[0] != '\0')
+		trimmed_str[j] = '\0';
+	return (trimmed_str);
+}
+
 void	free_garbage(t_garbage *alloc_elements)
 {
 	t_garbage *index;
@@ -90,28 +142,21 @@ void	*ft_malloc(size_t byte_size, int action)
 	return (NULL);
 }
 
-// void ctr_c(int sig)
-// {
-// 	if (sig == SIGUSR1)
-// 		return (1);
-// 	else 
-// 		return (-1);
-// }
-
-// char	*ready_for_builtin(char, line)
-
-void	whitch_builtin(char *line, t_env *env)
+void	whitch_builtin(char *line, t_env *env)//strtrim ' ' + strnstr ?
 {
+	line = ft_strtrim(line, " ");//enleve les space avant et après
 	if (!ft_strcmp(line, "pwd"))
 		pwd();
-	if (!ft_strnstr(line, "echo", 5))//strnstr marche mieux que strcmp
-	 	echo(line + 4, 1, env);
+	if (ft_strnstr(line, "echo", 5))//strnstr marche mieux que strcmp
+	 	echo(next_word(line), 1, env);
 	if (!ft_strcmp(line, "env"))
 		ft_env(env);
-	if (!ft_strcmp(line, "export"))
+	if (ft_strnstr(line, "export", 6))
 		ft_export(env, line);
-	// if (!ft_strcmp(line, "cd"))
-	// 	cd()
+	if (ft_strnstr(line, "unset", 5))
+		ft_unset(env, line);
+	if (ft_strnstr(line, "cd", 2))
+		cd(line);
 }
 
 void	routine(t_env *env)
@@ -125,8 +170,6 @@ void	routine(t_env *env)
 	add_history(line);// fait l'historique tout seul ?
 	// line = remove_extra_space(line);
 	whitch_builtin(line, env);
-	// if (!ft_strcmp(line, "pwd"))
-	// 	pwd();
 }
 
 int main(int argc, char **argv, char **envp)

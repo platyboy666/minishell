@@ -42,18 +42,15 @@ t_env	*create_env(char **envp)
 	env->next = NULL;
 	first = env;//ou stocker env dant un struct
 	index = 1;
-	// printf("%s\n", env->data);
 	while (envp[index])
 	{
 		new = ft_malloc(sizeof(t_env), ALLOC);
 		new->data = ft_strdup(envp[index]);
-		// printf("%s\n", new->data);
 		new->next = env;
 		env->next = new;
 		env = new;
 		index ++;
 	}
 	env->next = NULL;
-	// printf("%s\n", first->data);
 	return (first);
 }

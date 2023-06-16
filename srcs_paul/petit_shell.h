@@ -6,7 +6,7 @@
 /*   By: paulk <paulk@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:42:51 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/05/24 11:05:32 by paulk            ###   ########.fr       */
+/*   Updated: 2023/06/16 11:22:28 by paulk            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,5 +55,9 @@ int	ft_strcmp(const char *s1, const char *s2);
 char	*ft_strnstr(const char *big, const char *little, size_t len);
 void	ft_export(t_env *env, char *data);
 char	*remove_extra_space(char *line);
+size_t	ft_strlen(const char *string);
+char	*ft_strdup(const char *s);
+char	*next_word(char *str);
+void	ft_unset(t_env *env, char *rm_data);
 
 #endif
