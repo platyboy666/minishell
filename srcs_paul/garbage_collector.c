@@ -6,7 +6,7 @@
 /*   By: paulk <paulk@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:37:34 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/06/16 11:31:46 by paulk            ###   ########.fr       */
+/*   Updated: 2023/08/07 11:50:03 by paulk            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,7 +185,7 @@ int main(int argc, char **argv, char **envp)
 	sig.sa_sigaction = &signal_handler;
 	sigemptyset(&sig.sa_mask);
 	// line = readline("le_mien :>");
-	while (i < 5)
+	while (i < 50)
 	{
 		sigaction(SIGQUIT, &sig, NULL);
 		sigaction(SIGINT, &sig, NULL);

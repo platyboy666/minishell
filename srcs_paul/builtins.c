@@ -29,6 +29,8 @@ char	*ft_strnstr(const char *big, const char *little, size_t len)//echo
 				return ((char *)(&big[i]));
 			j++;
 		}
+		if (i + j == len)//si plusieur valeur sans espace entre
+			return ((char *)(&big[i]));
 		i++;
 	}
 	return (NULL);
@@ -54,19 +56,20 @@ char	*find_sp_eof(char *str)//retourne un pointeur sur le premier ' ' ou 0 renco
 	return(str);
 }
 
-char	*ft_strchr(const char *s, int c)
+char	*ft_strchr(char *s, int c)
 {
 	int	i;
 
 	i = 0;
 	if (!s)
-		return(NULL);
+		return (NULL);
 	while (s[i])
 	{
 		if (s[i] == (char)c)
 			return ((char *)s + i);
 		i++;
 	}
+	// printf("i in sttrchr :%d\n", i);
 	if (c == '\0')
 		return ((char *)s + i);
 	return (0);
@@ -83,14 +86,31 @@ void	ft_exit(int i)
 	exit(i);
 }
 
+char	*cacafonction(char *str)//retourne un pointeur $ ou ' ' plus petit
+{
+	char	*r;
+	char	*i;
+
+	// printf("%s\n", str);
+	r = find_sp_eof(str);
+	i = ft_strchr(str, '$');
+	// printf("strchr :%p\tstr :%p\n", ft_strchr(str, '$'), str);
+	// printf("f_sp_eof :%d\tstrchr :%d\n", r, i);
+	if (r > i)
+		return (i);
+	return (r);
+}
+
 char	*find_$(char *var, t_env *env)//cherche une correspondance au premier mot dans l'env
 {
 	char *value;
 
+	// printf("cacafnct :%d\n", cacafonction(var));
+	// printf("var :%s\n", var);
 	value = NULL;
 	while (!value && env->next)
 	{
-		value = ft_strnstr(env->data, var, find_sp_eof(var) - var);
+		value = ft_strnstr(env->data, var, cacafonction(var) - var);//find_sp_eof(var) - var
 		if (!value)
 			env = env->next;
 		else
@@ -101,7 +121,9 @@ char	*find_$(char *var, t_env *env)//cherche une correspondance au premier mot d
 	}
 	if (value)
 		printf("%s", value);
-	return(find_sp_eof(var) - 1);
+	if (cacafonction(var) < find_sp_eof(var))
+		return(find_sp_eof(var) - 1);
+	return(ft_strchr(var, '$'));
 }
 
 void	echo(char *str, char option, t_env *env)
