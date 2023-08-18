@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   petit_shell.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: paulk <paulk@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pkorsako <pkorsako@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:42:51 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/06/16 11:22:28 by paulk            ###   ########.fr       */
+/*   Updated: 2023/08/18 13:59:46 by pkorsako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ t_env	*create_env(char **envp);
 void	ft_env(t_env *env);
 void	pwd(void);
 void	echo(char *str, char option, t_env *env);
-void	ft_exit(int i);
+void	ft_exit();
 void	cd(char *str);
 int	ft_strcmp(const char *s1, const char *s2);
 char	*ft_strnstr(const char *big, const char *little, size_t len);

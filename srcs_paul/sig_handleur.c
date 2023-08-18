@@ -26,16 +26,16 @@
 void	signal_handler(int signum, siginfo_t *siginfo, void *other)
 {
 	write(1, "\n", 1);
-	printf("sig :%d\n", signum);
+	// printf("sig :%d\n", signum);
 	if (signum == SIGINT)
 	{
 		// write(1, "\n", 1);
-		exit(1);
-		// rl_on_new_line();
-		// rl_replace_line("", 0);
-		// rl_redisplay();
+		// exit(1);
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
 	}
-	else if (signum == SIGQUIT)
+	else if (signum == SIGQUIT)//sert a rien ?
 	{
 		write(1, "popo\n", 5);
 	}

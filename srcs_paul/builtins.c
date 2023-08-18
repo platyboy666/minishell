@@ -81,21 +81,19 @@ void	cd(char *str)
 	chdir(str);//comprend pas comment ca marche
 }
 
-void	ft_exit(int i)
+void	ft_exit()
 {
-	exit(i);
+	ft_malloc(0, FREE);
+	exit(1);
 }
 
-char	*cacafonction(char *str)//retourne un pointeur $ ou ' ' plus petit
+char	*find_$_sp(char *str)//retourne un pointeur $ ou ' ' plus petit
 {
 	char	*r;
 	char	*i;
 
-	// printf("%s\n", str);
 	r = find_sp_eof(str);
 	i = ft_strchr(str, '$');
-	// printf("strchr :%p\tstr :%p\n", ft_strchr(str, '$'), str);
-	// printf("f_sp_eof :%d\tstrchr :%d\n", r, i);
 	if (r > i)
 		return (i);
 	return (r);
@@ -105,12 +103,12 @@ char	*find_$(char *var, t_env *env)//cherche une correspondance au premier mot d
 {
 	char *value;
 
-	// printf("cacafnct :%d\n", cacafonction(var));
+	// printf("cacafnct :%s\n", find_$_sp(var));
 	// printf("var :%s\n", var);
 	value = NULL;
 	while (!value && env->next)
 	{
-		value = ft_strnstr(env->data, var, cacafonction(var) - var);//find_sp_eof(var) - var
+		value = ft_strnstr(env->data, var, find_$_sp(var) - var);//find_sp_eof(var) - var
 		if (!value)
 			env = env->next;
 		else
@@ -121,9 +119,10 @@ char	*find_$(char *var, t_env *env)//cherche une correspondance au premier mot d
 	}
 	if (value)
 		printf("%s", value);
-	if (cacafonction(var) < find_sp_eof(var))
-		return(find_sp_eof(var) - 1);
-	return(ft_strchr(var, '$'));
+	// printf("cacafnct :%s\tfind_sp_eof:%s", find_$_sp(var), find_sp_eof(var));
+	if (find_$_sp(var) > find_sp_eof(var))//si un espace suis
+		return(find_sp_eof(var) - 1);//renvoie a cette espace
+	return(find_$_sp(var) - 1);//deux $ sont colle
 }
 
 void	echo(char *str, char option, t_env *env)
@@ -134,6 +133,7 @@ void	echo(char *str, char option, t_env *env)
 	i = 0;
 	while (str && *str)// strtrim ' ' peut etre
 	{
+		// printf("str %s\n", str);
 		if (*str && *str != '$')
 			printf("%c", *str);
 		else if (*str == '$')
@@ -148,8 +148,9 @@ void	echo(char *str, char option, t_env *env)
 
 void	pwd(void)
 {
-	char cwd[50];// a precisuer plus tard
-	printf("%s\n", getcwd(cwd, 50));
+	char cwd[200];// a precisuer plus tard, faire un malloc, si cwd = null allouer de + en + jusqu'a reussite
+	getcwd(cwd, 200);
+	printf("%s\tis %zu letter long\n", cwd, ft_strlen(cwd));
 }
 
 void	ft_env(t_env *env)
@@ -186,14 +187,18 @@ void	ft_unset(t_env *env, char *rm_data)
 {
 	t_env	*tmp;
 
+	tmp = NULL;
 	rm_data = next_word(rm_data);
 	// printf("em_data :%s\n", rm_data);
 	while (env->next)
-	{
+	{printf("jjjj");
 		if (ft_strnstr(env->data, rm_data, find_sp_eof(rm_data) - rm_data))
 			break;
 		tmp = env;
 		env = env->next;
 	}
-	tmp->next = env->next;//pas besoins de free, le gb s'en occupera
+	if (tmp)
+		tmp->next = env->next;//pas besoins de free, le gb s'en occupera
+	// else
+		
 }

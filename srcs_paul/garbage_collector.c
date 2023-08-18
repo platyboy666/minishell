@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   garbage_collector.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: paulk <paulk@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pkorsako <pkorsako@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:37:34 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/08/07 11:50:03 by paulk            ###   ########.fr       */
+/*   Updated: 2023/08/18 15:12:28 by pkorsako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,6 +157,8 @@ void	whitch_builtin(char *line, t_env *env)//strtrim ' ' + strnstr ?
 		ft_unset(env, line);
 	if (ft_strnstr(line, "cd", 2))
 		cd(line);
+	if (ft_strnstr(line, "exit", 5))
+		ft_exit();
 }
 
 void	routine(t_env *env)
@@ -168,7 +170,6 @@ void	routine(t_env *env)
 	if (line == NULL)
 		exit(1);	//ctr^d pressed
 	add_history(line);// fait l'historique tout seul ?
-	// line = remove_extra_space(line);
 	whitch_builtin(line, env);
 }
 
@@ -184,15 +185,12 @@ int main(int argc, char **argv, char **envp)
 	sig.sa_flags = SA_SIGINFO;
 	sig.sa_sigaction = &signal_handler;
 	sigemptyset(&sig.sa_mask);
-	// line = readline("le_mien :>");
-	while (i < 50)
+	while (1)
 	{
 		sigaction(SIGQUIT, &sig, NULL);
 		sigaction(SIGINT, &sig, NULL);
 		routine(env);
-		// line = readline("le_mien");
-		// printf("%s\n", line);
-		i ++;
+
 	}
 	rl_clear_history();// réduit les leaks de realine
 	return (1);
