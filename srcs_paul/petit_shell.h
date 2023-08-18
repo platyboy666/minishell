@@ -6,7 +6,7 @@
 /*   By: pkorsako <pkorsako@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:42:51 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/08/18 13:59:46 by pkorsako         ###   ########.fr       */
+/*   Updated: 2023/08/18 15:27:07 by pkorsako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,6 @@ char	*remove_extra_space(char *line);
 size_t	ft_strlen(const char *string);
 char	*ft_strdup(const char *s);
 char	*next_word(char *str);
-void	ft_unset(t_env *env, char *rm_data);
+t_env	*ft_unset(t_env *env, char *rm_data);
 
 #endif

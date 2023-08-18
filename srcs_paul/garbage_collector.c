@@ -6,7 +6,7 @@
 /*   By: pkorsako <pkorsako@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:37:34 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/08/18 15:12:28 by pkorsako         ###   ########.fr       */
+/*   Updated: 2023/08/18 15:24:27 by pkorsako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ void	*ft_malloc(size_t byte_size, int action)
 	return (NULL);
 }
 
-void	whitch_builtin(char *line, t_env *env)//strtrim ' ' + strnstr ?
+t_env	*whitch_builtin(char *line, t_env *env)//strtrim ' ' + strnstr ?
 {
 	line = ft_strtrim(line, " ");//enleve les space avant et après
 	if (!ft_strcmp(line, "pwd"))
@@ -154,24 +154,25 @@ void	whitch_builtin(char *line, t_env *env)//strtrim ' ' + strnstr ?
 	if (ft_strnstr(line, "export", 6))
 		ft_export(env, line);
 	if (ft_strnstr(line, "unset", 5))
-		ft_unset(env, line);
+		env = ft_unset(env, line);
 	if (ft_strnstr(line, "cd", 2))
 		cd(line);
 	if (ft_strnstr(line, "exit", 5))
 		ft_exit();
+	return (env);
 }
 
-void	routine(t_env *env)
-{
-	char	*line;
-	int		i;
-	
-	line = readline("le_mien :>");
-	if (line == NULL)
-		exit(1);	//ctr^d pressed
-	add_history(line);// fait l'historique tout seul ?
-	whitch_builtin(line, env);
-}
+// void	routine(t_env *env)
+// {
+	// char	*line;
+	// int		i;
+	// 
+	// line = readline("le_mien :>");
+	// if (line == NULL)
+		// exit(1);	//ctr^d pressed
+	// add_history(line);// fait l'historique tout seul ?
+	// whitch_builtin(line, env);
+// }
 
 int main(int argc, char **argv, char **envp)
 {
@@ -189,8 +190,12 @@ int main(int argc, char **argv, char **envp)
 	{
 		sigaction(SIGQUIT, &sig, NULL);
 		sigaction(SIGINT, &sig, NULL);
-		routine(env);
-
+		// routine(env);
+		line = readline("le_mien :>");
+		if (line == NULL)
+			exit(1);	//ctr^d pressed
+		add_history(line);// fait l'historique tout seul ?
+		env = whitch_builtin(line, env);
 	}
 	rl_clear_history();// réduit les leaks de realine
 	return (1);

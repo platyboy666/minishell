@@ -183,15 +183,17 @@ void	ft_export(t_env *env, char *new_data)//
 	new_variable->next = NULL;
 }
 
-void	ft_unset(t_env *env, char *rm_data)
+t_env	*ft_unset(t_env *env, char *rm_data)
 {
 	t_env	*tmp;
+	t_env	*first;
 
 	tmp = NULL;
+	first = env;
 	rm_data = next_word(rm_data);
 	// printf("em_data :%s\n", rm_data);
 	while (env->next)
-	{printf("jjjj");
+	{
 		if (ft_strnstr(env->data, rm_data, find_sp_eof(rm_data) - rm_data))
 			break;
 		tmp = env;
@@ -199,6 +201,7 @@ void	ft_unset(t_env *env, char *rm_data)
 	}
 	if (tmp)
 		tmp->next = env->next;//pas besoins de free, le gb s'en occupera
-	// else
-		
+	else
+		first = env->next;
+	return (first);
 }
