@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   garbage_collector.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pkorsako <pkorsako@student.42.fr>          +#+  +:+       +#+        */
+/*   By: paulk <paulk@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:37:34 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/08/18 15:24:27 by pkorsako         ###   ########.fr       */
+/*   Updated: 2023/08/27 12:49:27 by paulk            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,7 +182,7 @@ int main(int argc, char **argv, char **envp)
 	int i = 0;
 	
 	line = NULL;
-	env = create_env(envp);
+	env = create_env(envp);//crée l'env a partir de envp
 	sig.sa_flags = SA_SIGINFO;
 	sig.sa_sigaction = &signal_handler;
 	sigemptyset(&sig.sa_mask);
@@ -191,11 +191,11 @@ int main(int argc, char **argv, char **envp)
 		sigaction(SIGQUIT, &sig, NULL);
 		sigaction(SIGINT, &sig, NULL);
 		// routine(env);
-		line = readline("le_mien :>");
+		line = readline("le_mien :>");//affiche le prompt
 		if (line == NULL)
 			exit(1);	//ctr^d pressed
 		add_history(line);// fait l'historique tout seul ?
-		env = whitch_builtin(line, env);
+		env = whitch_builtin(line, env);//permet de modifier env
 	}
 	rl_clear_history();// réduit les leaks de realine
 	return (1);

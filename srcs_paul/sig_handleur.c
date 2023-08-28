@@ -37,6 +37,6 @@ void	signal_handler(int signum, siginfo_t *siginfo, void *other)
 	}
 	else if (signum == SIGQUIT)//sert a rien ?
 	{
-		write(1, "popo\n", 5);
+		write(1, "NAZE?\n", 6);
 	}
 }

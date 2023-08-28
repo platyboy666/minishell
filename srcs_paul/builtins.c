@@ -30,8 +30,9 @@ char	*ft_strnstr(const char *big, const char *little, size_t len)//echo
 			j++;
 		}
 		if (i + j == len)//si plusieur valeur sans espace entre
+		{	printf("len:%zu\tlittle:%s\n", len, little);
 			return ((char *)(&big[i]));
-		i++;
+		}i++;
 	}
 	return (NULL);
 }
@@ -99,7 +100,7 @@ char	*find_$_sp(char *str)//retourne un pointeur $ ou ' ' plus petit
 	return (r);
 }
 
-char	*find_$(char *var, t_env *env)//cherche une correspondance au premier mot dans l'env
+char	*find_$(char *var, t_env *env)//cherche une correspondance a var dans l'env et le print
 {
 	char *value;
 
@@ -119,7 +120,6 @@ char	*find_$(char *var, t_env *env)//cherche une correspondance au premier mot d
 	}
 	if (value)
 		printf("%s", value);
-	// printf("cacafnct :%s\tfind_sp_eof:%s", find_$_sp(var), find_sp_eof(var));
 	if (find_$_sp(var) > find_sp_eof(var))//si un espace suis
 		return(find_sp_eof(var) - 1);//renvoie a cette espace
 	return(find_$_sp(var) - 1);//deux $ sont colle
@@ -150,14 +150,11 @@ void	pwd(void)
 {
 	char cwd[200];// a precisuer plus tard, faire un malloc, si cwd = null allouer de + en + jusqu'a reussite
 	getcwd(cwd, 200);
-	printf("%s\tis %zu letter long\n", cwd, ft_strlen(cwd));
+	// printf("%s\tis %zu letter long\n", cwd, ft_strlen(cwd));
 }
 
 void	ft_env(t_env *env)
 {
-	int	i;
-
-	i = 0;
 	// printf("%s\n", env->data);
 	while (env->next)
 	{
@@ -165,7 +162,6 @@ void	ft_env(t_env *env)
 		env = env->next;
 	}
 	printf("%s\n", env->data);
-
 }
 
 void	ft_export(t_env *env, char *new_data)//
@@ -185,6 +181,11 @@ void	ft_export(t_env *env, char *new_data)//
 
 t_env	*ft_unset(t_env *env, char *rm_data)
 {
+
+}
+
+t_env	*ft_unset(t_env *env, char *rm_data)
+{
 	t_env	*tmp;
 	t_env	*first;
 
@@ -200,8 +201,10 @@ t_env	*ft_unset(t_env *env, char *rm_data)
 		env = env->next;
 	}
 	if (tmp)
+	{	printf("tmp; %s\tenv: %s\n", tmp->data, env->data);
 		tmp->next = env->next;//pas besoins de free, le gb s'en occupera
-	else
+	}
+	else//si c'est le premier élément de la liste
 		first = env->next;
 	return (first);
 }
