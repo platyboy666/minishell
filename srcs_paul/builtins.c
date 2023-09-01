@@ -168,6 +168,8 @@ void	ft_export(t_env *env, char *new_data)//
 {
 	t_env	*new_variable;
 
+	if (!strchr(new_data, '='))
+		return ;
 	new_data = next_word(new_data);
 	// printf("new_data :%s\n", new_data);
 	while (env->next)
@@ -179,10 +181,10 @@ void	ft_export(t_env *env, char *new_data)//
 	new_variable->next = NULL;
 }
 
-t_env	*ft_unset(t_env *env, char *rm_data)
-{
+// t_env	*ft_unset(t_env *env, char *rm_data)
+// {
 
-}
+// }
 
 t_env	*ft_unset(t_env *env, char *rm_data)
 {
@@ -194,8 +196,8 @@ t_env	*ft_unset(t_env *env, char *rm_data)
 	rm_data = next_word(rm_data);
 	// printf("em_data :%s\n", rm_data);
 	while (env->next)
-	{
-		if (ft_strnstr(env->data, rm_data, find_sp_eof(rm_data) - rm_data))
+	{//ft_strnstr(env->data, var, find_$_sp(var) - var);
+		if (ft_strnstr(env->data, rm_data, find_$_sp(rm_data) - rm_data))
 			break;
 		tmp = env;
 		env = env->next;
