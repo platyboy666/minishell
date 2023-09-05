@@ -95,7 +95,7 @@ char	*find_$_sp(char *str)//retourne un pointeur $ ou ' ' plus petit
 
 	r = find_sp_eof(str);
 	i = ft_strchr(str, '$');
-	if (r > i)
+	if (r > i && i)
 		return (i);
 	return (r);
 }
@@ -108,7 +108,7 @@ char	*find_$(char *var, t_env *env)//cherche une correspondance a var dans l'env
 	// printf("var :%s\n", var);
 	value = NULL;
 	while (!value && env->next)
-	{
+	{//	printf("lenF :%ld\n", var - find_$_sp(var));
 		value = ft_strnstr(env->data, var, find_$_sp(var) - var);//find_sp_eof(var) - var
 		if (!value)
 			env = env->next;
@@ -150,7 +150,7 @@ void	pwd(void)
 {
 	char cwd[200];// a precisuer plus tard, faire un malloc, si cwd = null allouer de + en + jusqu'a reussite
 	getcwd(cwd, 200);
-	// printf("%s\tis %zu letter long\n", cwd, ft_strlen(cwd));
+	printf("%s\tis %zu letter long\n", cwd, ft_strlen(cwd));
 }
 
 void	ft_env(t_env *env)
@@ -181,10 +181,29 @@ void	ft_export(t_env *env, char *new_data)//
 	new_variable->next = NULL;
 }
 
-// t_env	*ft_unset(t_env *env, char *rm_data)
-// {
+t_env	*ft_unset(t_env *env, char *rm_data)
+{
+	t_env	*tmp;
+	t_env	*first;
 
-// }
+	tmp = NULL;
+	first = env;
+	rm_data = next_word(rm_data);
+	while (env->next)
+	{
+		if (ft_strnstr(env->data, rm_data, find_$_sp(rm_data) - rm_data) && env->data[find_$_sp(rm_data) - rm_data + 1] == '=')
+			break;
+		tmp = env;
+		env = env->next;
+	}
+	if (tmp)
+	{	printf("tmp; %s\tenv: %s\n", tmp->data, env->data);
+		tmp->next = env->next;//pas besoins de free, le gb s'en occupera
+	}
+	else//si c'est le premier élément de la liste
+		first = env->next;
+	return (first);
+}
 
 t_env	*ft_unset(t_env *env, char *rm_data)
 {
@@ -194,10 +213,9 @@ t_env	*ft_unset(t_env *env, char *rm_data)
 	tmp = NULL;
 	first = env;
 	rm_data = next_word(rm_data);
-	// printf("em_data :%s\n", rm_data);
 	while (env->next)
-	{//ft_strnstr(env->data, var, find_$_sp(var) - var);
-		if (ft_strnstr(env->data, rm_data, find_$_sp(rm_data) - rm_data))
+	{//ft_strnstr(env->data, rm_data, find_$_sp(rm_data) - rm_data) && env->data[find_$_sp(rm_data) - rm_data + 1] == '=')
+		if (ft_strnstr(env->data, rm_data, find_$_sp(rm_data) - rm_data) && env->data[find_$_sp(rm_data) - rm_data + 1] == '=')
 			break;
 		tmp = env;
 		env = env->next;
