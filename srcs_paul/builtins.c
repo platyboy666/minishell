@@ -30,7 +30,7 @@ char	*ft_strnstr(const char *big, const char *little, size_t len)//echo
 			j++;
 		}
 		if (i + j == len)//si plusieur valeur sans espace entre
-		{	printf("len:%zu\tlittle:%s\n", len, little);
+		{	//printf("len:%zu\tlittle:%s\n", len, little);
 			return ((char *)(&big[i]));
 		}i++;
 	}
@@ -88,7 +88,7 @@ void	ft_exit()
 	exit(1);
 }
 
-char	*find_$_sp(char *str)//retourne un pointeur $ ou ' ' plus petit
+char	*find_$_sp(char *str)//retourne un pointeur '$' ou ' ' plus petit
 {
 	char	*r;
 	char	*i;
@@ -104,11 +104,9 @@ char	*find_$(char *var, t_env *env)//cherche une correspondance a var dans l'env
 {
 	char *value;
 
-	// printf("cacafnct :%s\n", find_$_sp(var));
-	// printf("var :%s\n", var);
 	value = NULL;
 	while (!value && env->next)
-	{//	printf("lenF :%ld\n", var - find_$_sp(var));
+	{
 		value = ft_strnstr(env->data, var, find_$_sp(var) - var);//find_sp_eof(var) - var
 		if (!value)
 			env = env->next;
@@ -179,30 +177,6 @@ void	ft_export(t_env *env, char *new_data)//
 	env->next = new_variable;
 	new_variable->data = new_data;
 	new_variable->next = NULL;
-}
-
-t_env	*ft_unset(t_env *env, char *rm_data)
-{
-	t_env	*tmp;
-	t_env	*first;
-
-	tmp = NULL;
-	first = env;
-	rm_data = next_word(rm_data);
-	while (env->next)
-	{
-		if (ft_strnstr(env->data, rm_data, find_$_sp(rm_data) - rm_data) && env->data[find_$_sp(rm_data) - rm_data + 1] == '=')
-			break;
-		tmp = env;
-		env = env->next;
-	}
-	if (tmp)
-	{	printf("tmp; %s\tenv: %s\n", tmp->data, env->data);
-		tmp->next = env->next;//pas besoins de free, le gb s'en occupera
-	}
-	else//si c'est le premier élément de la liste
-		first = env->next;
-	return (first);
 }
 
 t_env	*ft_unset(t_env *env, char *rm_data)
