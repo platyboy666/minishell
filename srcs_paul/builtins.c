@@ -100,7 +100,7 @@ char	*find_$_sp(char *str)//retourne un pointeur '$' ou ' ' plus petit
 	return (r);
 }
 
-char	*find_$(char *var, t_env *env)//cherche une correspondance a var dans l'env et le print
+char	*print_$(char *var, t_env *env)//cherche une correspondance a var dans l'env et le print
 {
 	char *value;
 
@@ -123,7 +123,7 @@ char	*find_$(char *var, t_env *env)//cherche une correspondance a var dans l'env
 	return(find_$_sp(var) - 1);//deux $ sont colle
 }
 
-void	echo(char *str, char option, t_env *env)
+void	echo(char *str, char option, t_env *env) 
 {
 	char	*s; 
 	size_t	i;
@@ -136,7 +136,7 @@ void	echo(char *str, char option, t_env *env)
 			printf("%c", *str);
 		else if (*str == '$')
 		{
-			str = find_$(strchr(str, '$') + 1, env);
+			str = print_$(strchr(str, '$') + 1, env);
 		}
 		str ++;
 	}
@@ -162,21 +162,68 @@ void	ft_env(t_env *env)
 	printf("%s\n", env->data);
 }
 
-void	ft_export(t_env *env, char *new_data)//
+size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
+{
+	size_t	i;
+
+	i = 0;
+	printf("1src :%s\n", src);
+	if (dstsize < 1)
+		return (ft_strlen(src));
+	while (i < dstsize - 1 && src[i] != '\0')
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	printf("2src :%s\n", src);
+	dst[i] = '\0';
+	printf("3src :%s\n", src);
+	return (ft_strlen(src));
+}
+
+t_env	*find_$(char *var, t_env *env)//cherche une correspondance a var dans l'env et le print
+{
+	char	*str;
+
+	printf("1var :%s\n", var);
+	if (ft_strchr(var, '='))
+	{printf("2var :%s\n", var);
+		ft_strlcpy(str, var, ft_strchr(var, '=') - var + 1);//peut etre chance
+	printf("3var :%s\n", var);}
+// printf("str :%s\tft_strchr(var, '=') - var :%ld\n", str, ft_strchr(var, '=') - var);//marche pas sais pas pk
+	else
+		str = ft_strdup(var);
+	while (strncmp(env->data, str, ft_strlen(str)) && env->next)//parcour l'env pour trouver correspondence
+		env = env->next;
+	if (strncmp(env->data, str, ft_strlen(str)) == 0)//a trouver correspondence
+		return (env);
+	else
+		return (NULL);
+}
+
+void	ft_export(t_env *env, char *new_data)
 {
 	t_env	*new_variable;
 
 	if (!strchr(new_data, '='))
 		return ;
+	// printf("1new_data :%s\n", new_data);
 	new_data = next_word(new_data);
-	// printf("new_data :%s\n", new_data);
-	while (env->next)
-		env = env->next;
-	new_variable = ft_malloc(sizeof(t_env), ALLOC);
+	// printf("2new_data :%s\n", new_data);
+	new_variable = find_$(new_data, env);
+	// printf("3new_data :%s\n", new_data);
+	if (new_variable)
+		new_variable->data = new_data;
+	else
+	{
+		while (env->next)
+			env = env->next;
+		new_variable = ft_malloc(sizeof(t_env), ALLOC);
 
-	env->next = new_variable;
-	new_variable->data = new_data;
-	new_variable->next = NULL;
+		env->next = new_variable;
+		new_variable->data = new_data;
+		new_variable->next = NULL;
+	}
 }
 
 t_env	*ft_unset(t_env *env, char *rm_data)
