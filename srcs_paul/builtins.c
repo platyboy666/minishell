@@ -167,7 +167,6 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
 	size_t	i;
 
 	i = 0;
-	printf("1src :%s\n", src);
 	if (dstsize < 1)
 		return (ft_strlen(src));
 	while (i < dstsize - 1 && src[i] != '\0')
@@ -175,27 +174,35 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
 		dst[i] = src[i];
 		i++;
 	}
-	printf("2src :%s\n", src);
 	dst[i] = '\0';
-	printf("3src :%s\n", src);
 	return (ft_strlen(src));
 }
 
-t_env	*find_$(char *var, t_env *env)//cherche une correspondance a var dans l'env et le print
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < n && (s1[i] || s2[i]))
+	{
+		if (s1[i] != s2[i])
+			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+		i++;
+	}
+	return (0);
+}
+
+t_env	*find_$(char *var, t_env *env)//cherche une correspondance a var dans l'env
 {
 	char	*str;
 
-	printf("1var :%s\n", var);
-	if (ft_strchr(var, '='))
-	{printf("2var :%s\n", var);
-		ft_strlcpy(str, var, ft_strchr(var, '=') - var + 1);//peut etre chance
-	printf("3var :%s\n", var);}
-// printf("str :%s\tft_strchr(var, '=') - var :%ld\n", str, ft_strchr(var, '=') - var);//marche pas sais pas pk
-	else
-		str = ft_strdup(var);
-	while (strncmp(env->data, str, ft_strlen(str)) && env->next)//parcour l'env pour trouver correspondence
+	str = ft_strdup(var);
+	if (ft_strchr(var, '='))//appeler par export ou unset
+		ft_strlcpy(str, var, ft_strchr(var, '=') - var + 1);//peut etre chance printf("str :%s\tft_strchr(var, '=') - var :%ld\n", str, ft_strchr(var, '=') - var);
+	while (ft_strncmp(env->data, str, ft_strchr(env->data, '=') - env->data) && env->next)//parcour l'env pour trouver correspondence
 		env = env->next;
-	if (strncmp(env->data, str, ft_strlen(str)) == 0)//a trouver correspondence
+	printf("str :%s\tenv->data :%s\n", str, env->data);
+	if (strncmp(env->data, str, ft_strchr(env->data, '=') - env->data) == 0)//a trouver correspondence
 		return (env);
 	else
 		return (NULL);
@@ -207,11 +214,8 @@ void	ft_export(t_env *env, char *new_data)
 
 	if (!strchr(new_data, '='))
 		return ;
-	// printf("1new_data :%s\n", new_data);
 	new_data = next_word(new_data);
-	// printf("2new_data :%s\n", new_data);
 	new_variable = find_$(new_data, env);
-	// printf("3new_data :%s\n", new_data);
 	if (new_variable)
 		new_variable->data = new_data;
 	else
@@ -234,15 +238,19 @@ t_env	*ft_unset(t_env *env, char *rm_data)
 	tmp = NULL;
 	first = env;
 	rm_data = next_word(rm_data);
+	if (find_$(rm_data, env) == NULL)//n'existe pas dans l'env
+	{	printf("popo\n");
+		return (first);
+	}
 	while (env->next)
-	{//ft_strnstr(env->data, rm_data, find_$_sp(rm_data) - rm_data) && env->data[find_$_sp(rm_data) - rm_data + 1] == '=')
-		if (ft_strnstr(env->data, rm_data, find_$_sp(rm_data) - rm_data) && env->data[find_$_sp(rm_data) - rm_data + 1] == '=')
+	{
+		if (ft_strncmp(env->data, rm_data, find_$_sp(rm_data) - rm_data) && env->data[find_$_sp(rm_data) - rm_data + 1] == '=')
 			break;
 		tmp = env;
 		env = env->next;
 	}
 	if (tmp)
-	{	printf("tmp; %s\tenv: %s\n", tmp->data, env->data);
+	{	//printf("tmp; %s\tenv: %s\n", tmp->data, env->data);
 		tmp->next = env->next;//pas besoins de free, le gb s'en occupera
 	}
 	else//si c'est le premier élément de la liste
