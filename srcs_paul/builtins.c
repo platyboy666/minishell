@@ -199,10 +199,11 @@ t_env	*find_$(char *var, t_env *env)//cherche une correspondance a var dans l'en
 	str = ft_strdup(var);
 	if (ft_strchr(var, '='))//appeler par export ou unset
 		ft_strlcpy(str, var, ft_strchr(var, '=') - var + 1);//peut etre chance printf("str :%s\tft_strchr(var, '=') - var :%ld\n", str, ft_strchr(var, '=') - var);
-	while (ft_strncmp(env->data, str, ft_strchr(env->data, '=') - env->data) && env->next)//parcour l'env pour trouver correspondence
+	while (ft_strncmp(env->data, str, ft_strchr(env->data, '=') - env->data) && ft_strncmp(env->data, str, ft_strlen(str)) && env->next)//parcour l'env pour trouver correspondence
 		env = env->next;
-	printf("str :%s\tenv->data :%s\n", str, env->data);
-	if (strncmp(env->data, str, ft_strchr(env->data, '=') - env->data) == 0)//a trouver correspondence
+	// printf("n :%ld\t", ft_strchr(env->data, '=') - env->data);
+	// printf("str :%s\tenv->data :%s\n", str, env->data);
+	if (!strncmp(env->data, str, ft_strchr(env->data, '=') - env->data) && !ft_strncmp(env->data, str, ft_strlen(str)))//a trouver correspondence
 		return (env);
 	else
 		return (NULL);
@@ -212,7 +213,8 @@ void	ft_export(t_env *env, char *new_data)
 {
 	t_env	*new_variable;
 
-	if (!strchr(new_data, '='))
+	new_variable = NULL;
+	if (!ft_strchr(new_data, '='))
 		return ;
 	new_data = next_word(new_data);
 	new_variable = find_$(new_data, env);
@@ -220,6 +222,7 @@ void	ft_export(t_env *env, char *new_data)
 		new_variable->data = new_data;
 	else
 	{
+		printf("creating new variable\n");
 		while (env->next)
 			env = env->next;
 		new_variable = ft_malloc(sizeof(t_env), ALLOC);
@@ -230,30 +233,65 @@ void	ft_export(t_env *env, char *new_data)
 	}
 }
 
-t_env	*ft_unset(t_env *env, char *rm_data)
+t_env	*f_and_r(t_env *env, char *rm_data, t_env *first)
 {
 	t_env	*tmp;
-	t_env	*first;
 
 	tmp = NULL;
-	first = env;
-	rm_data = next_word(rm_data);
 	if (find_$(rm_data, env) == NULL)//n'existe pas dans l'env
-	{	printf("popo\n");
+	{	printf("value don't found\n");
 		return (first);
 	}
 	while (env->next)
 	{
-		if (ft_strncmp(env->data, rm_data, find_$_sp(rm_data) - rm_data) && env->data[find_$_sp(rm_data) - rm_data + 1] == '=')
+		if (!ft_strncmp(env->data, rm_data, find_$_sp(rm_data) - rm_data) && env->data[find_$_sp(rm_data) - rm_data] == '=')
+		{
+			// printf("in while tmp; %s\tenv: %s\n", tmp->data, env->data);
 			break;
+		}
 		tmp = env;
 		env = env->next;
 	}
 	if (tmp)
-	{	//printf("tmp; %s\tenv: %s\n", tmp->data, env->data);
+	{	printf("in if tmp; %s\tenv: %s\n", tmp->data, env->data);
 		tmp->next = env->next;//pas besoins de free, le gb s'en occupera
 	}
 	else//si c'est le premier élément de la liste
 		first = env->next;
 	return (first);
+}
+
+t_env	*ft_unset(t_env *env, char *rm_data)
+{
+	// t_env	*tmp;
+	t_env	*first;
+	char	**rm_datas;
+
+	// tmp = NULL;
+	first = env;
+	rm_data = next_word(rm_data);
+	rm_datas = ft_split(rm data, ' ');
+	while()
+		first = f_and_r(env, rm_data, first)
+	// if (find_$(rm_data, env) == NULL)//n'existe pas dans l'env
+	// {	printf("value don't found\n");
+	// 	return (first);
+	// }
+	// while (env->next)
+	// {
+	// 	if (!ft_strncmp(env->data, rm_data, find_$_sp(rm_data) - rm_data) && env->data[find_$_sp(rm_data) - rm_data] == '=')
+	// 	{
+	// 		// printf("in while tmp; %s\tenv: %s\n", tmp->data, env->data);
+	// 		break;
+	// 	}
+	// 	tmp = env;
+	// 	env = env->next;
+	// }
+	// if (tmp)
+	// {	printf("in if tmp; %s\tenv: %s\n", tmp->data, env->data);
+	// 	tmp->next = env->next;//pas besoins de free, le gb s'en occupera
+	// }
+	// else//si c'est le premier élément de la liste
+	// 	first = env->next;
+	// return (first);
 }
