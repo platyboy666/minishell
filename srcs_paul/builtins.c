@@ -1,5 +1,98 @@
 #include "petit_shell.h"
 
+size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
+{
+	size_t	i;
+
+	i = 0;
+	if (dstsize < 1)
+		return (ft_strlen(src));
+	while (i < dstsize - 1 && src[i] != '\0')
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	dst[i] = '\0';
+	return (ft_strlen(src));
+}
+
+int	word_count(char const *s, char c)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	while (s[i] != 0)
+	{
+		if (s[i] != c)
+		{
+			j++;
+			while (s[i] != c && s[i] != 0)
+				i ++;
+		}
+		else
+		{
+			while (s[i] == c && s[i] != 0)
+				i ++;
+		}
+	}
+	return (j);
+}
+
+int	alloc_error(char **tab, int j)
+{
+	if (tab[j])
+		return (0);
+	while ((int long long)j >= 0)
+	{
+		free(tab[j]);
+		j --;
+	}
+	free(tab);
+	return (1);
+}
+
+void	alloc_and_cpy(char **tab, char const *s, char c)
+{
+	int	i;
+	int	j;
+	int	n;
+
+	n = 0;
+	i = 0;
+	j = 0;
+	while (s[i] != 0)
+	{
+		if (s[i] != c)
+		{
+			while (s[i + n] != c && s[i + n] != 0)
+				n ++;
+			tab[j] = malloc(n + 1);
+			if (alloc_error(tab, j))
+				return ;
+			ft_strlcpy(tab[j], (char *) &s[i], n + 1);
+			i += n;
+			j ++;
+			n = 0;
+		}
+		while (s[i] == c && s[i] != 0)
+			i ++;
+	}
+}
+
+char	**ft_split(char const *s, char c)
+{
+	char	**tab;
+
+	tab = malloc(sizeof(char *) * (word_count(s, c) + 1));
+	if (tab == 0)
+		return (0);
+	tab[word_count(s, c)] = 0;
+	alloc_and_cpy(tab, s, c);
+	return (tab);
+}//ft_split
+
 int	ft_strcmp(const char *s1, const char *s2)
 {
 	size_t	i;
@@ -162,22 +255,6 @@ void	ft_env(t_env *env)
 	printf("%s\n", env->data);
 }
 
-size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
-{
-	size_t	i;
-
-	i = 0;
-	if (dstsize < 1)
-		return (ft_strlen(src));
-	while (i < dstsize - 1 && src[i] != '\0')
-	{
-		dst[i] = src[i];
-		i++;
-	}
-	dst[i] = '\0';
-	return (ft_strlen(src));
-}
-
 int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
 	size_t	i;
@@ -233,10 +310,12 @@ void	ft_export(t_env *env, char *new_data)
 	}
 }
 
-t_env	*f_and_r(t_env *env, char *rm_data, t_env *first)
+t_env	*f_and_r(t_env *env, char *rm_data)
 {
 	t_env	*tmp;
+	t_env	*first;
 
+	first = env;
 	tmp = NULL;
 	if (find_$(rm_data, env) == NULL)//n'existe pas dans l'env
 	{	printf("value don't found\n");
@@ -264,15 +343,23 @@ t_env	*f_and_r(t_env *env, char *rm_data, t_env *first)
 t_env	*ft_unset(t_env *env, char *rm_data)
 {
 	// t_env	*tmp;
+	int		max_word;
+	int		i;
 	t_env	*first;
 	char	**rm_datas;
 
 	// tmp = NULL;
+	i = 0;
 	first = env;
 	rm_data = next_word(rm_data);
-	rm_datas = ft_split(rm data, ' ');
-	while()
-		first = f_and_r(env, rm_data, first)
+	max_word = word_count(rm_data, ' ');
+	rm_datas = ft_split(rm_data, ' ');
+	while(i < max_word)
+	{
+		first = f_and_r(first, rm_datas[i]);
+		i ++;
+	}
+	return (first);
 	// if (find_$(rm_data, env) == NULL)//n'existe pas dans l'env
 	// {	printf("value don't found\n");
 	// 	return (first);
