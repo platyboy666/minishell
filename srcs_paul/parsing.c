@@ -12,7 +12,58 @@ void	ft_bzero(void *s, size_t n)
 	ft_memset(s, '\0', n);
 }
 
-int	pl_lenght(char *line)
+int	how_much_cmd(char *line)
+{
+	int nb_of_cmd;
+	int	i;
+	int	quote;
+
+	quote = 0;
+	i = 0;
+	nb_of_cmd = 0;
+	while(line && line[i])
+	{
+		if (line[i] == 34 || line[i] == 39) //quote et dquote
+		{
+			if (quote == 0)
+				quote = line[i];
+			else if (quote == line[i])
+				quote = 0;
+		}
+		else if ((line[i] == '|' || line[i] == '>' || line[i] == '<') && !quote)//gere pas les || et << et >>
+		{
+			nb_of_cmd ++;
+		}
+		i ++;
+	}
+	printf("nb_of_cmd :%d\n", nb_of_cmd);
+	return (nb_of_cmd);
+}
+
+char	*fill_cmd_line(char get_line)
+{
+char	
+}
+
+char	**parsing(char *get_line, t_env *env)
+{
+	char	**cmd_line;
+	int		line;
+	int		ch;
+	int		nb_of_cmd;
+
+	line = 0;
+	ch = 0;
+	nb_of_cmd = how_much_cmd(get_line);
+	cmd_line = ft_malloc(sizeof(char *) * nb_of_cmd, ALLOC);
+	while (line < nb_of_cmd)
+	{
+		cmd_line[line] = fill_cmd_line(get_line);
+		line ++;
+	}
+}
+
+/*int	pl_lenght(char *line)
 {
 	size_t	lenght;
 	size_t	i;
@@ -86,4 +137,4 @@ char	*remove_extra_space(char *line)
 	}
 	// printf("parsed_line :%s\n", parsed_line);
 	return (parsed_line);
-}
+}*/

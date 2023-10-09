@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   garbage_collector.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: paulk <paulk@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pkorsako <pkorsako@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:37:34 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/08/27 12:49:27 by paulk            ###   ########.fr       */
+/*   Updated: 2023/10/09 16:19:58 by pkorsako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,10 +144,11 @@ void	*ft_malloc(size_t byte_size, int action)
 
 t_env	*whitch_builtin(char *line, t_env *env)//strtrim ' ' + strnstr ?
 {
+	// printf("you enter :%s\n", line);
 	line = ft_strtrim(line, " ");//enleve les space avant et après
 	if (!ft_strcmp(line, "pwd"))
 		pwd();
-	if (ft_strnstr(line, "echo", 5))//strnstr marche mieux que strcmp
+	if (ft_strnstr(line, "echo", 4))//strnstr marche mieux que strcmp
 	 	echo(next_word(line), 1, env);
 	if (!ft_strcmp(line, "env"))
 		ft_env(env);
@@ -195,6 +196,7 @@ int main(int argc, char **argv, char **envp)
 		if (line == NULL)
 			exit(1);	//ctr^d pressed
 		add_history(line);// fait l'historique tout seul ?
+		parsing(line, env);
 		env = whitch_builtin(line, env);//permet de modifier env
 	}
 	rl_clear_history();// réduit les leaks de realine
