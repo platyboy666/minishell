@@ -20,32 +20,101 @@ int	how_much_cmd(char *line)
 
 	quote = 0;
 	i = 0;
-	nb_of_cmd = 0;
+	nb_of_cmd = 1;
 	while(line && line[i])
 	{
 		if (line[i] == 34 || line[i] == 39) //quote et dquote
 		{
-			if (quote == 0)
-				quote = line[i];
-			else if (quote == line[i])
-				quote = 0;
+			if (quote == 0)//quote == 0 quand hors de quote
+				quote = line[i];//quote devient quote ou dquote
+			else if (quote == line[i])//verifie si la quote actuel est le meme type que celle du debut
+				quote = 0;//on est plus entre des quotes
 		}
 		else if ((line[i] == '|' || line[i] == '>' || line[i] == '<') && !quote)//gere pas les || et << et >>
 		{
+			if (line[i + 1] == '>' || line[i + 1] == '<')
+				i ++;
 			nb_of_cmd ++;
 		}
 		i ++;
 	}
-	printf("nb_of_cmd :%d\n", nb_of_cmd);
+	// printf("nb_of_cmd :%d\n\n", nb_of_cmd);
 	return (nb_of_cmd);
 }
 
-char	*fill_cmd_line(char get_line)
+int	char_b_metachar(char *get_line)//retourne cmb de char avant le premier metachar interpreter, strlen si aucun
 {
-char	
+	// char	*line;
+	// int		char_befor_metachar;
+	int		i;
+	int		quote;
+	int		how_much_quote;
+
+	how_much_quote = 0;
+	quote = 0;
+	i = 0;
+	while(get_line[i])
+	{
+		if (get_line[i] == 34 || get_line[i] == 39) //quote et dquote
+		{
+			if (quote == 0)//quote == 0 quand hors de quote
+			{
+				// how_much_quote ++;	
+				quote = get_line[i];//quote devient quote ou dquote
+			}
+			else if (quote == get_line[i])//verifie si la quote actuel est le meme type que celle du debut
+			{
+				// how_much_quote ++;
+				quote = 0;//on est plus entre des quotes
+			}
+		}
+		else if ((get_line[i] == '|' || get_line[i] == '>' || get_line[i] == '<') && !quote)
+			break;
+		i ++;
+	}
+	// printf("there is %d char befor metachar\n", i);
+	return (i - how_much_quote);
+	// line = ft_malloc(sizeof(char) * i, ALLOC);
+	// return (line);
 }
 
-char	**parsing(char *get_line, t_env *env)
+char	*fill_cmd_line(char *get_line, char *cmd_line)//remplis la ligne de commande et renvoie un pointeur apres le prochain metachar de get_line
+{
+	int	i;
+	int	quote;
+	int	char_befor_metachar;
+
+	char_befor_metachar = char_b_metachar(get_line);
+	quote = 0;
+	i = 0;
+	// printf("line will be max:%d long\n", char_befor_metachar);
+	while (char_befor_metachar > 0)//*get_line && (*get_line == 34 && quote == 34) && (*get_line == 39 && quote == 39)
+	{
+		if (*get_line == 34 || *get_line == 39) //quote et dquote
+		{
+			if (quote == 0)//quote == 0 quand hors de quote
+				quote = *get_line;//quote devient quote ou dquote
+			else if (quote == *get_line)//verifie si la quote actuel est le meme type que celle du debut
+				quote = 0;//on est plus entre des quotes
+			else if (*get_line != quote)// quote dans quote
+			{
+				cmd_line[i] = *get_line;
+				i ++;
+			}
+		}
+		else
+		{
+			cmd_line[i] = *get_line;
+			i ++;
+		}
+		get_line ++;
+		char_befor_metachar --;
+	}
+	get_line ++;
+	return (get_line);
+}
+
+char	**parsing(char *get_line, t_env *env, t_data data)
 {
 	char	**cmd_line;
 	int		line;
@@ -58,9 +127,15 @@ char	**parsing(char *get_line, t_env *env)
 	cmd_line = ft_malloc(sizeof(char *) * nb_of_cmd, ALLOC);
 	while (line < nb_of_cmd)
 	{
-		cmd_line[line] = fill_cmd_line(get_line);
+		// printf("cmd_line[%d] is malloc for %d char \n", line, char_b_metachar(get_line));
+		cmd_line[line] = ft_malloc(sizeof(char) * char_b_metachar(get_line), ALLOC);//alloue la ligne jusqu'au premier metachar
+		ft_bzero(cmd_line[line], char_b_metachar(get_line));
+		get_line = fill_cmd_line(get_line, cmd_line[line]);//renvoi pointeur apres metachar
+		// printf("%d line is :%s\n", line, cmd_line[line]);
+		// printf("what left of get_line is :%s\n\n", get_line);
 		line ++;
 	}
+	return (cmd_line);
 }
 
 /*int	pl_lenght(char *line)

@@ -6,7 +6,7 @@
 /*   By: pkorsako <pkorsako@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:37:34 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/10/09 16:19:58 by pkorsako         ###   ########.fr       */
+/*   Updated: 2023/10/10 17:12:19 by pkorsako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,12 +175,17 @@ t_env	*whitch_builtin(char *line, t_env *env)//strtrim ' ' + strnstr ?
 	// whitch_builtin(line, env);
 // }
 
+void	send_to(char **cmd_lines, t_env env, char *line)
+{
+	
+}
+
 int main(int argc, char **argv, char **envp)
 {
 	char	*line;
 	struct sigaction sig;
 	t_env	*env;
-	int i = 0;
+	t_data	*data;
 	
 	line = NULL;
 	env = create_env(envp);//crée l'env a partir de envp
@@ -196,8 +201,9 @@ int main(int argc, char **argv, char **envp)
 		if (line == NULL)
 			exit(1);	//ctr^d pressed
 		add_history(line);// fait l'historique tout seul ?
-		parsing(line, env);
-		env = whitch_builtin(line, env);//permet de modifier env
+		data->cmd_lines = parsing(line, env, data);
+		send_to(data->cmd_lines, env, line);
+		// env = whitch_builtin(line, env);//permet de modifier env
 	}
 	rl_clear_history();// réduit les leaks de realine
 	return (1);
