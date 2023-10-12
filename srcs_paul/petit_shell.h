@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   petit_shell.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pkorsako <pkorsako@student.42.fr>          +#+  +:+       +#+        */
+/*   By: paulk <paulk@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:42:51 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/10/10 17:07:25 by pkorsako         ###   ########.fr       */
+/*   Updated: 2023/10/12 13:12:29 by paulk            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ extern char *line;
 typedef struct s_data
 {
 	char	**cmd_lines;
-	char	*separator;
+	char	*separator[3];
 }	t_data;
 
 
@@ -66,6 +66,6 @@ size_t	ft_strlen(const char *string);
 char	*ft_strdup(const char *s);
 char	*next_word(char *str);
 t_env	*ft_unset(t_env *env, char *rm_data);
-char	**parsing(char *get_line, t_env *env);
+t_data	*parsing(char *get_line, t_env *env);
 
 #endif

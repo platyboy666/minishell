@@ -32,13 +32,13 @@ int	how_much_cmd(char *line)
 		}
 		else if ((line[i] == '|' || line[i] == '>' || line[i] == '<') && !quote)//gere pas les || et << et >>
 		{
-			if (line[i + 1] == '>' || line[i + 1] == '<')
+			if ((line[i] == '>' && line[i + 1] == '>' ) || (line[i] == '<' && line[i + 1] == '<'))
 				i ++;
 			nb_of_cmd ++;
 		}
 		i ++;
 	}
-	// printf("nb_of_cmd :%d\n\n", nb_of_cmd);
+	printf("nb_of_cmd :%d\n\n", nb_of_cmd);
 	return (nb_of_cmd);
 }
 
@@ -83,6 +83,7 @@ char	*fill_cmd_line(char *get_line, char *cmd_line)//remplis la ligne de command
 	int	i;
 	int	quote;
 	int	char_befor_metachar;
+	char	c;
 
 	char_befor_metachar = char_b_metachar(get_line);
 	quote = 0;
@@ -110,32 +111,39 @@ char	*fill_cmd_line(char *get_line, char *cmd_line)//remplis la ligne de command
 		get_line ++;
 		char_befor_metachar --;
 	}
+	c = *get_line;
 	get_line ++;
+	printf("get_line first char is %c\n", *get_line);
+	if (c == *get_line)
+		get_line ++;
 	return (get_line);
 }
 
-char	**parsing(char *get_line, t_env *env, t_data data)
+t_data	*parsing(char *get_line, t_env *env)
 {
 	char	**cmd_line;
+	t_data	*data;
 	int		line;
 	int		ch;
 	int		nb_of_cmd;
 
+	data = ft_malloc(sizeof(t_data *), ALLOC);
 	line = 0;
 	ch = 0;
 	nb_of_cmd = how_much_cmd(get_line);
-	cmd_line = ft_malloc(sizeof(char *) * nb_of_cmd, ALLOC);
+	data->cmd_lines = ft_malloc(sizeof(char *) * nb_of_cmd, ALLOC);
 	while (line < nb_of_cmd)
 	{
-		// printf("cmd_line[%d] is malloc for %d char \n", line, char_b_metachar(get_line));
-		cmd_line[line] = ft_malloc(sizeof(char) * char_b_metachar(get_line), ALLOC);//alloue la ligne jusqu'au premier metachar
-		ft_bzero(cmd_line[line], char_b_metachar(get_line));
-		get_line = fill_cmd_line(get_line, cmd_line[line]);//renvoi pointeur apres metachar
-		// printf("%d line is :%s\n", line, cmd_line[line]);
-		// printf("what left of get_line is :%s\n\n", get_line);
+		printf("cmd_line[%d] is malloc for %d char \n", line, char_b_metachar(get_line));
+		data->cmd_lines[line] = ft_malloc(sizeof(char) * char_b_metachar(get_line), ALLOC);//alloue la ligne jusqu'au premier metachar
+		ft_bzero(data->cmd_lines[line], char_b_metachar(get_line));
+		get_line = fill_cmd_line(get_line, data->cmd_lines[line]);//renvoi pointeur apres metachar
+		printf("%d line is :%s\n", line, data->cmd_lines[line]);
+		printf("what left of get_line is :%s\n\n", get_line);
 		line ++;
 	}
-	return (cmd_line);
+	return (data);
+	// return (cmd_line);
 }
 
 /*int	pl_lenght(char *line)
