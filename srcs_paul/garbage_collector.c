@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   garbage_collector.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: paulk <paulk@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pkorsako <pkorsako@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:37:34 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/10/12 11:42:36 by paulk            ###   ########.fr       */
+/*   Updated: 2023/10/13 16:16:56 by pkorsako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,9 +175,28 @@ t_env	*whitch_builtin(char *line, t_env *env)//strtrim ' ' + strnstr ?
 	// whitch_builtin(line, env);
 // }
 
-void	send_to(char **cmd_lines, t_env *env, char *line)
+void	send_to(t_data *data, t_env *env, char *line)
 {
-	
+	int i;
+	int	max_cmd;
+
+	i = 0;
+	max_cmd = how_much_cmd(line);
+	while (i < max_cmd)
+	{
+		if (!ft_strcmp(data->separator[i], "<"))
+			printf("< est appeler avec %s et %s\n", data->cmd_lines[i], data->cmd_lines[i + 1]);
+		else if (!ft_strcmp(data->separator[i], "<<"))
+			printf("<< est appeler avec %s et %s\n", data->cmd_lines[i], data->cmd_lines[i + 1]);
+		else if (!ft_strcmp(data->separator[i], ">"))
+			printf("> est appeler avec %s et %s\n", data->cmd_lines[i], data->cmd_lines[i + 1]);
+		else if (!ft_strcmp(data->separator[i], ">>"))
+			printf(">> est appeler avec %s et %s\n", data->cmd_lines[i], data->cmd_lines[i + 1]);
+		else if (!ft_strcmp(data->separator[i], "|"))
+			printf("| est appeler avec %s et %s\n", data->cmd_lines[i], data->cmd_lines[i + 1]);
+		i ++;
+	}
+
 }
 
 int main(int argc, char **argv, char **envp)
@@ -202,7 +221,7 @@ int main(int argc, char **argv, char **envp)
 			exit(1);	//ctr^d pressed
 		add_history(line);// fait l'historique tout seul ?
 		data = parsing(line, env);
-		send_to(data->cmd_lines, env, line);
+		send_to(data, env, line);
 		// env = whitch_builtin(line, env);//permet de modifier env
 	}
 	rl_clear_history();// réduit les leaks de realine

@@ -78,7 +78,7 @@ int	char_b_metachar(char *get_line)//retourne cmb de char avant le premier metac
 	// return (line);
 }
 
-char	*fill_cmd_line(char *get_line, char *cmd_line)//remplis la ligne de commande et renvoie un pointeur apres le prochain metachar de get_line
+char	*fill_cmd_line(char *get_line, char *cmd_line, char *separator)//remplis la ligne de commande et renvoie un pointeur apres le prochain metachar de get_line
 {
 	int	i;
 	int	quote;
@@ -111,12 +111,21 @@ char	*fill_cmd_line(char *get_line, char *cmd_line)//remplis la ligne de command
 		get_line ++;
 		char_befor_metachar --;
 	}
-	c = *get_line;
+	*separator = *get_line;
 	get_line ++;
-	printf("get_line first char is %c\n", *get_line);
-	if (c == *get_line)
-		get_line ++;
+	if (*separator == *get_line)
+	{
+		separator ++;
+		*separator = *get_line;
+		get_line ++;	
+	}
 	return (get_line);
+	// c = *get_line;
+	// get_line ++;
+	// printf("get_line first char is %c\n", *get_line);
+	// if (c == *get_line)
+		// get_line ++;
+	// return (get_line);
 }
 
 t_data	*parsing(char *get_line, t_env *env)
@@ -132,14 +141,18 @@ t_data	*parsing(char *get_line, t_env *env)
 	ch = 0;
 	nb_of_cmd = how_much_cmd(get_line);
 	data->cmd_lines = ft_malloc(sizeof(char *) * nb_of_cmd, ALLOC);
+	data->separator = ft_malloc(sizeof(char *) * nb_of_cmd, ALLOC);
 	while (line < nb_of_cmd)
 	{
 		printf("cmd_line[%d] is malloc for %d char \n", line, char_b_metachar(get_line));
 		data->cmd_lines[line] = ft_malloc(sizeof(char) * char_b_metachar(get_line), ALLOC);//alloue la ligne jusqu'au premier metachar
+		data->separator[line] = ft_malloc(sizeof(char) * 3, ALLOC);
 		ft_bzero(data->cmd_lines[line], char_b_metachar(get_line));
-		get_line = fill_cmd_line(get_line, data->cmd_lines[line]);//renvoi pointeur apres metachar
+		ft_bzero(data->separator[line], 3);
+		get_line = fill_cmd_line(get_line, data->cmd_lines[line], data->separator[line]);//renvoi pointeur apres metachar
 		printf("%d line is :%s\n", line, data->cmd_lines[line]);
-		printf("what left of get_line is :%s\n\n", get_line);
+		printf("separator is :%s\n\n", data->separator[line]);
+		// printf("what left of get_line is :%s\n\n", get_line);
 		line ++;
 	}
 	return (data);
