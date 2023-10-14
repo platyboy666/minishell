@@ -332,7 +332,7 @@ void	ft_export(t_env *env, char *new_data)
 t_env	*f_and_r(t_env *env, char *rm_data)
 {
 	t_env	*tmp;
-	t_env	*first;
+	t_env	**first;
 
 	first = env;
 	tmp = NULL;
@@ -359,12 +359,12 @@ t_env	*f_and_r(t_env *env, char *rm_data)
 	return (first);
 }
 
-t_env	*ft_unset(t_env *env, char *rm_data)
+t_env	**ft_unset(t_env *env, char *rm_data)
 {
 	// t_env	*tmp;
 	int		max_word;
 	int		i;
-	t_env	*first;
+	t_env	**first;
 	char	**rm_datas;
 
 	// tmp = NULL;

@@ -139,7 +139,7 @@ char	*fill_cmd_line(char *get_line, char *cmd_line, char *separator)//remplis la
 	// return (get_line);
 }
 
-t_data	*parsing(char *get_line, t_env *env)
+t_data	*parsing(char *get_line, char **envp)
 {
 	char	**cmd_line;
 	t_data	*data;
@@ -148,6 +148,8 @@ t_data	*parsing(char *get_line, t_env *env)
 	int		nb_of_cmd;
 
 	data = ft_malloc(sizeof(t_data *), ALLOC);
+	data->env = create_env(envp);
+	data->second_element = data->env->next;
 	line = 0;
 	ch = 0;
 	nb_of_cmd = how_much_cmd(get_line);

@@ -6,7 +6,7 @@
 /*   By: pkorsako <pkorsako@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:42:51 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/10/14 15:44:56 by pkorsako         ###   ########.fr       */
+/*   Updated: 2023/10/14 16:36:07 by pkorsako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ typedef struct s_data
 	char	**cmd_lines;
 	char	**separator;
 	t_env	*env;
+	t_env	*second_element;
 }	t_data;
 
 void	signal_handler(int signum, siginfo_t *info, void *other);
@@ -68,7 +69,7 @@ size_t	ft_strlen(const char *string);
 char	*ft_strdup(const char *s);
 char	*next_word(char *str);
 t_env	*ft_unset(t_env *env, char *rm_data);
-t_data	*parsing(char *get_line, t_env *env);
+t_data	*parsing(char *get_line, char **envp);
 int		how_much_cmd(char *line);
 char *get_path(t_env *env);
 

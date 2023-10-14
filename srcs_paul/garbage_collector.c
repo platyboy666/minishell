@@ -6,7 +6,7 @@
 /*   By: pkorsako <pkorsako@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:37:34 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/10/14 16:18:46 by pkorsako         ###   ########.fr       */
+/*   Updated: 2023/10/14 16:47:48 by pkorsako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,20 +142,20 @@ void	*ft_malloc(size_t byte_size, int action)
 	return (NULL);
 }
 
-t_env	*whitch_builtin(char *line, t_env *env, char *line_for_echo)//strtrim ' ' + strnstr ?
+t_env	*whitch_builtin(char *line, t_env **env, char *line_for_echo)//strtrim ' ' + strnstr ?
 {
 	// printf("you enter :%s\n", line);
 	line = ft_strtrim(line, " ");//enleve les space avant et après
 	if (!ft_strcmp(line, "pwd"))
 		pwd();
 	if (ft_strnstr(line, "echo", 4))//strnstr marche mieux que strcmp
-	 	echo(next_word(line), 1, env);
+	 	echo(next_word(line), 1, *env);
 	if (!ft_strcmp(line, "env"))
-		ft_env(env);
+		ft_env(*env);
 	if (ft_strnstr(line, "export", 6))
 		ft_export(env, line);
 	if (ft_strnstr(line, "unset", 5))
-		env = ft_unset(env, line);
+		env = ft_unset(*env, line);
 	if (ft_strnstr(line, "cd", 2))
 		cd(line);
 	if (ft_strnstr(line, "exit", 5))
@@ -180,7 +180,7 @@ char	*line_for_echo(char *line)
 	return (NULL);
 }
 
-void	send_to(t_data *data, t_env *env, char *line)
+void	send_to(t_data *data, char *line)
 {
 	int i;
 	int	max_cmd;
@@ -201,7 +201,7 @@ void	send_to(t_data *data, t_env *env, char *line)
 		else if (!ft_strcmp(data->separator[i], "|"))
 			printf("| est appeler avec %s et %s\n", data->cmd_lines[i], data->cmd_lines[i + 1]);
 		else
-			whitch_builtin(data->cmd_lines[i], env, line_for_echo(line));
+			whitch_builtin(data->cmd_lines[i], &data->env, line_for_echo(line));
 		i ++;
 	}
 
@@ -211,11 +211,11 @@ int main(int argc, char **argv, char **envp)
 {
 	char	*line;
 	struct sigaction sig;
-	t_env	*env;
+	// t_env	*env;
 	t_data	*data;
 	
 	line = NULL;
-	env = create_env(envp);//crée l'env a partir de envp
+	// env = create_env(envp);//crée l'env a partir de envp
 	sig.sa_flags = SA_SIGINFO;
 	sig.sa_sigaction = &signal_handler;
 	sigemptyset(&sig.sa_mask);
@@ -228,8 +228,8 @@ int main(int argc, char **argv, char **envp)
 		if (line == NULL)
 			exit(1);	//ctr^d pressed
 		add_history(line);// fait l'historique tout seul ?
-		data = parsing(line, env);
-		send_to(data, env, line);
+		data = parsing(line, envp);
+		send_to(data, line);
 		// env = whitch_builtin(line, env);//permet de modifier env
 	}
 	rl_clear_history();// réduit les leaks de realine ?
