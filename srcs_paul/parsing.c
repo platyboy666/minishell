@@ -12,6 +12,20 @@ void	ft_bzero(void *s, size_t n)
 	ft_memset(s, '\0', n);
 }
 
+int	ft_quote(const char c, int action)//positif si dans des quotes
+{
+	static int	quote;
+
+	if (action == UPDATE)
+	{
+		if (quote == 0)//quote == 0 quand hors de quote
+			quote = c;//quote devient quote ou dquote
+		else if (quote == c)//verifie si la quote actuel est le meme type que celle du debut
+			quote = 0;//on est plus entre des quotes
+	}
+	return (quote);
+}
+
 int	how_much_cmd(char *line)
 {
 	int nb_of_cmd;
@@ -25,10 +39,11 @@ int	how_much_cmd(char *line)
 	{
 		if (line[i] == 34 || line[i] == 39) //quote et dquote
 		{
-			if (quote == 0)//quote == 0 quand hors de quote
-				quote = line[i];//quote devient quote ou dquote
-			else if (quote == line[i])//verifie si la quote actuel est le meme type que celle du debut
-				quote = 0;//on est plus entre des quotes
+			quote = ft_quote(line[i], UPDATE);
+			// if (quote == 0)//quote == 0 quand hors de quote
+				// quote = line[i];//quote devient quote ou dquote
+			// else if (quote == line[i])//verifie si la quote actuel est le meme type que celle du debut
+				// quote = 0;//on est plus entre des quotes
 		}
 		else if ((line[i] == '|' || line[i] == '>' || line[i] == '<') && !quote)//gere pas les || et << et >>
 		{
@@ -48,7 +63,7 @@ int	char_b_metachar(char *get_line)//retourne cmb de char avant le premier metac
 	// int		char_befor_metachar;
 	int		i;
 	int		quote;
-	int		how_much_quote;
+	int		how_much_quote;//sert a rien
 
 	how_much_quote = 0;
 	quote = 0;
@@ -57,16 +72,11 @@ int	char_b_metachar(char *get_line)//retourne cmb de char avant le premier metac
 	{
 		if (get_line[i] == 34 || get_line[i] == 39) //quote et dquote
 		{
-			if (quote == 0)//quote == 0 quand hors de quote
-			{
-				// how_much_quote ++;	
-				quote = get_line[i];//quote devient quote ou dquote
-			}
-			else if (quote == get_line[i])//verifie si la quote actuel est le meme type que celle du debut
-			{
-				// how_much_quote ++;
-				quote = 0;//on est plus entre des quotes
-			}
+			quote = ft_quote(line[i], UPDATE);
+		// if (quote == 0)//quote == 0 quand hors de quote
+			// quote = get_line[i];//quote devient quote ou dquote
+		// else if (quote == get_line[i])//verifie si la quote actuel est le meme type que celle du debut
+			// quote = 0;//on est plus entre des quotes
 		}
 		else if ((get_line[i] == '|' || get_line[i] == '>' || get_line[i] == '<') && !quote)
 			break;
@@ -93,11 +103,12 @@ char	*fill_cmd_line(char *get_line, char *cmd_line, char *separator)//remplis la
 	{
 		if (*get_line == 34 || *get_line == 39) //quote et dquote
 		{
-			if (quote == 0)//quote == 0 quand hors de quote
-				quote = *get_line;//quote devient quote ou dquote
-			else if (quote == *get_line)//verifie si la quote actuel est le meme type que celle du debut
-				quote = 0;//on est plus entre des quotes
-			else if (*get_line != quote)// quote dans quote
+			quote = ft_quote(*get_line, UPDATE);
+			// if (quote == 0)//quote == 0 quand hors de quote
+				// quote = *get_line;//quote devient quote ou dquote
+			// else if (quote == *get_line)//verifie si la quote actuel est le meme type que celle du debut
+				// quote = 0;//on est plus entre des quotes
+			if (ft_quote(*get_line, 0))// quote dans quote
 			{
 				cmd_line[i] = *get_line;
 				i ++;
@@ -144,14 +155,14 @@ t_data	*parsing(char *get_line, t_env *env)
 	data->separator = ft_malloc(sizeof(char *) * nb_of_cmd, ALLOC);
 	while (line < nb_of_cmd)
 	{
-		printf("cmd_line[%d] is malloc for %d char \n", line, char_b_metachar(get_line));
+		// printf("cmd_line[%d] is malloc for %d char \n", line, char_b_metachar(get_line));
 		data->cmd_lines[line] = ft_malloc(sizeof(char) * char_b_metachar(get_line), ALLOC);//alloue la ligne jusqu'au premier metachar
 		data->separator[line] = ft_malloc(sizeof(char) * 3, ALLOC);
 		ft_bzero(data->cmd_lines[line], char_b_metachar(get_line));
 		ft_bzero(data->separator[line], 3);
 		get_line = fill_cmd_line(get_line, data->cmd_lines[line], data->separator[line]);//renvoi pointeur apres metachar
-		printf("%d line is :%s\n", line, data->cmd_lines[line]);
-		printf("separator is :%s\n\n", data->separator[line]);
+		// printf("%d line is :%s\n", line, data->cmd_lines[line]);
+		// printf("separator is :%s\n\n", data->separator[line]);
 		// printf("what left of get_line is :%s\n\n", get_line);
 		line ++;
 	}

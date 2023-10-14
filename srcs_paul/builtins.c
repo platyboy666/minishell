@@ -130,6 +130,20 @@ char	*ft_strnstr(const char *big, const char *little, size_t len)//echo
 	return (NULL);
 }
 
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < n && (s1[i] || s2[i]))
+	{
+		if (s1[i] != s2[i])
+			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+		i++;
+	}
+	return (0);
+}
+
 char	*next_word(char *str)//retourne un pointeur au début du prochain mot
 {
 	while (*str && *str != ' ')
@@ -193,21 +207,28 @@ char	*find_$_sp(char *str)//retourne un pointeur '$' ou ' ' plus petit
 	return (r);
 }
 
-char	*print_$(char *var, t_env *env)//cherche une correspondance a var dans l'env et le print
+char	*print_$(char *var, t_env *env)//cherche une correspondance a var dans l'env, le print et renvoi la suite de la cmd a echo
 {
 	char *value;
 
 	value = NULL;
-	while (!value && env->next)
+	while (ft_strncmp(env->data, var, ft_strchr(env->data, '=') - env->data) && (ft_strncmp(env->data, var, find_$_sp(var) - var)) && env->next)//(!value && env->next)
 	{
-		value = ft_strnstr(env->data, var, find_$_sp(var) - var);//find_sp_eof(var) - var
-		if (!value)
-			env = env->next;
-		else
-		{
-			value = ft_strchr(env->data, '=') + 1;
-			break;
-		}
+		// value = ft_strnstr(env->data, var, find_$_sp(var) - var);//find_sp_eof(var) - var
+		// if (ft_strncmp(env->data, var, ft_strchr(env->data, '=') - env->data) && (ft_strncmp(env->data, var, find_$_sp(var) - var)))//(!value)
+		// {
+		// 	// printf("env->data :%s\n", env->data);
+		// 	// printf("strtruc :%ld\tfind$ :%ld\n", find_$_sp(var) - var, find_$_sp(var) - var);
+		// 	env = env->next;
+		// }
+		env = env->next;
+	}
+	if (!strncmp(env->data, var, ft_strchr(env->data, '=') - env->data) && !ft_strncmp(env->data, var, find_$_sp(var) - var))
+	{
+		printf("env->data :%s\n", env->data);
+		printf("strtruc :%ld\tfind$ :%ld\n", ft_strchr(env->data, '=') - env->data, find_$_sp(var) - var);
+		value = ft_strchr(env->data, '=') + 1;
+		// break;
 	}
 	if (value)
 		printf("%s", value);
@@ -255,21 +276,7 @@ void	ft_env(t_env *env)
 	printf("%s\n", env->data);
 }
 
-int	ft_strncmp(const char *s1, const char *s2, size_t n)
-{
-	size_t	i;
-
-	i = 0;
-	while (i < n && (s1[i] || s2[i]))
-	{
-		if (s1[i] != s2[i])
-			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-		i++;
-	}
-	return (0);
-}
-
-t_env	*find_$(char *var, t_env *env)//cherche une correspondance a var dans l'env
+t_env	*find_$(char *var, t_env *env)//cherche une correspondance a var dans l'env et la renvoie
 {
 	char	*str;
 
@@ -281,15 +288,27 @@ t_env	*find_$(char *var, t_env *env)//cherche une correspondance a var dans l'en
 	// printf("n :%ld\t", ft_strchr(env->data, '=') - env->data);
 	// printf("str :%s\tenv->data :%s\n", str, env->data);
 	if (!strncmp(env->data, str, ft_strchr(env->data, '=') - env->data) && !ft_strncmp(env->data, str, ft_strlen(str)))//a trouver correspondence
+	{
+		// printf("found :%s\n", env->data);
 		return (env);
+	}
 	else
 		return (NULL);
+}
+
+char *get_path(t_env *env)
+{
+	// t_env	*path;
+	
+	// path = find_$("PATH=", env);
+	return (find_$("PATH=", env)->data);
 }
 
 void	ft_export(t_env *env, char *new_data)
 {
 	t_env	*new_variable;
 
+	// printf("export\n");
 	new_variable = NULL;
 	if (!ft_strchr(new_data, '='))
 		return ;

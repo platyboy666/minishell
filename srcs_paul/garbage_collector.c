@@ -6,7 +6,7 @@
 /*   By: pkorsako <pkorsako@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:37:34 by pkorsako          #+#    #+#             */
-/*   Updated: 2023/10/13 16:16:56 by pkorsako         ###   ########.fr       */
+/*   Updated: 2023/10/14 16:18:46 by pkorsako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ void	*ft_malloc(size_t byte_size, int action)
 	return (NULL);
 }
 
-t_env	*whitch_builtin(char *line, t_env *env)//strtrim ' ' + strnstr ?
+t_env	*whitch_builtin(char *line, t_env *env, char *line_for_echo)//strtrim ' ' + strnstr ?
 {
 	// printf("you enter :%s\n", line);
 	line = ft_strtrim(line, " ");//enleve les space avant et après
@@ -175,6 +175,11 @@ t_env	*whitch_builtin(char *line, t_env *env)//strtrim ' ' + strnstr ?
 	// whitch_builtin(line, env);
 // }
 
+char	*line_for_echo(char *line)
+{
+	return (NULL);
+}
+
 void	send_to(t_data *data, t_env *env, char *line)
 {
 	int i;
@@ -182,6 +187,7 @@ void	send_to(t_data *data, t_env *env, char *line)
 
 	i = 0;
 	max_cmd = how_much_cmd(line);
+	// printf("path :%s\n", get_path(env));
 	while (i < max_cmd)
 	{
 		if (!ft_strcmp(data->separator[i], "<"))
@@ -194,6 +200,8 @@ void	send_to(t_data *data, t_env *env, char *line)
 			printf(">> est appeler avec %s et %s\n", data->cmd_lines[i], data->cmd_lines[i + 1]);
 		else if (!ft_strcmp(data->separator[i], "|"))
 			printf("| est appeler avec %s et %s\n", data->cmd_lines[i], data->cmd_lines[i + 1]);
+		else
+			whitch_builtin(data->cmd_lines[i], env, line_for_echo(line));
 		i ++;
 	}
 
@@ -224,6 +232,6 @@ int main(int argc, char **argv, char **envp)
 		send_to(data, env, line);
 		// env = whitch_builtin(line, env);//permet de modifier env
 	}
-	rl_clear_history();// réduit les leaks de realine
+	rl_clear_history();// réduit les leaks de realine ?
 	return (1);
 }
